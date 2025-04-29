@@ -1,4 +1,5 @@
 const router = require("express").Router(); // import express router
+const authRouter = require("../modules/auth/auth.router.js"); // import auth router
 
 
 router.get("/", (req, res) => {
@@ -10,132 +11,21 @@ router.get("/", (req, res) => {
     })
 })
 
-
-// ------------- Auth module -----------------------
-
-/**
- * Task:
- * Build atleast the following routes:
- ** Auth and authentication
- * - register
- * - activate
- * - login done
- * - forget password request
- * - token verify for forget password
- * - password reset router
- * - password User get profile
- * - logout
- * - user update
- * 
- */
+router.use("/auth", authRouter); // mount auth router on /auth path
+router.use("/user", userRouter); 
+router.use("/brand", brandRouter)
+router.use("/product", productRouter);
+router.use("/category", categoryRouter);
 
 
- router.post("/register", (req, res) => {
-
-    res.status(200).json({
-        data: null,
-        message: "You are register",
-        status: "Success",
-        options: null,
-    })
- })
-
- // router.post("/activate/:token", (req, res) => {
-router.get("/activate/:token", (req, res) => {
-    console.log(req.params);
-    
-    // const {token} = req.params;    OR
-    const token = req.params.token; 
-    // console.log(token);
-
-    let params = req.params;
-    const header = req.headers;
-    const query = req.query;
-    
-
-    res.status(200).json({
-        // data: token,
-        data: {
-            params,
-            header,
-            query
-        },
-        message: "User activated successfully",
-        status: "success",
-        options: null 
-    })
-});
-
-router.post("/login", (req, res, next) => {
-    res.status(200).json({
-        data: null,
-        message: "You are loggedIn",
-        status: "Success",
-        options: null,
-    })
-})
-
-router.post("/forget-password", (req, res, next) => {
-    res.status(200).json({
-        data: null,
-        message: "forget password route",
-        status: "Success",
-        options: null,
-    })
-})
-
-router.get("/forget-password-verify/:token", (req, res, next) => {
-    const token = req.params.token;
-
-    res.status(200).json({
-        data: token,
-        message: "You are loggedIn",
-        status: "Success",
-        options: null,
-    })
-})
-
-router.put("/reset-password", (req, res, next) => {
-    res.status(200).json({
-        data: null,
-        message: "reset password route",
-        status: "Success",
-        options: null,
-    })
-})
-
-router.get("me", (req, res, next) => {
-    res.status(200).json({
-        data: null,
-        message: "Me route",
-        status: "Success",
-        options: null,
-    })
-})
-
-router.get("/logout", (req, res, next) => {
-    res.status(200).json({
-        data: null,
-        message: "You are LoggedIn",
-        status: "Success",
-        options: null,
-    })
-})
-
-router.put("/user/:id", (req, res, next) => {
-
-    res.status(200).json({
-        data: req.params.id,
-        message: "Update user Router",
-        status: "Success",
-        options: null,
-    })
-})
-
-
-
-// Watched till: 35 min       (date: Apr 23, 2025 )
-
+// router.use("/order", orderRouter);
+// router.use("/cart", cartRouter);
+// router.use("/address", addressRouter);
+// router.use("/payment", paymentRouter);
+// router.use("/wishlist", wishlistRouter);
+// router.use("/review", reviewRouter);
+// router.use("/notification", NotificationRouter);
+// router.use("/admin", adminRouter);
 
 
 module.exports = router; // export the router

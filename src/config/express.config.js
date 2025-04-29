@@ -16,6 +16,17 @@ app.use("/api/v1/", router)
 // app.use("/api/v2/", router)
 
 
+// 404 route handler
+app.use((req, res, next) => {
+    res.status(404).json({
+        error: null,
+        message: "Resource not found",
+        status: "NOT_FOUND",
+        options: null,
+    })
+})
+
+
 
 // mount this server on listen from server
 module.exports = app
