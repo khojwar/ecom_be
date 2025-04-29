@@ -7,7 +7,7 @@ const app = express(); // create an express application
 
 
 
-module.exports = app; // export the express application
+
 
 // router mount
 // http://localhost:3000/api/v1/abc
@@ -30,3 +30,5 @@ app.use((req, res, next) => {
 
 // mount this server on listen from server
 module.exports = app
+
+// module.exports = app; // export the express application
