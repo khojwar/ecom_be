@@ -1,5 +1,5 @@
 const brandRouter = require("express").Router();
-const { BrandController } = require("./brand.controller");
+const { BrandController } = require("./brand.controller.js");
 
 const brandCtr = new BrandController();
 

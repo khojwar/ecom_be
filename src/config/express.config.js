@@ -1,11 +1,37 @@
+
 const express = require('express');
 const router = require("./router.config.js");
 
 
-const app = express(); // create an express application
+const app = express(); // create an express application 
+
+// app.use((req, res, next) => {
+//     console.log("I am always executable");
+
+//     req.user = "Tikaram"
+    
+//     next() // without any argument => call next middleware
+// })
 
 
+// app.use((req, res, next) => {
+//     console.log("I am second middleware");
 
+//     next()
+// })
+
+
+// parser 
+   // json, urlencoded, multipart/form-data
+
+app.use(express.json({
+    limit: "10mb",
+})) 
+
+app.use(express.urlencoded({
+    extended: true,
+    limit: "10mb",
+}))
 
 
 
@@ -26,6 +52,8 @@ app.use((req, res, next) => {
     })
 })
 
+
+// TODO: Error handling middleware  --> (200 status code bahek-ko sabai error haru handle garne)
 
 
 // mount this server on listen from server

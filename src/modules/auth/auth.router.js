@@ -32,9 +32,10 @@ authRouter.post("/forget-password", authCtrl.forgetPasswordRequest)
 authRouter.get("/forget-password-verify/:token", authCtrl.forgetPasswordVerify)
 authRouter.put("/reset-password", authCtrl.resetPassword)
 
+// loggedIn user can only access this route
 authRouter.get("/me", authCtrl.loggedInUserProfile)
 
-authRouter.get("/logout", authCtrl.logoutUser)
+authRouter.get("/logout", authCtrl.logutUser)
 authRouter.put("/user/:id", authCtrl.updateUserById)
 
 
