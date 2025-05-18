@@ -3,7 +3,7 @@ const bodyValidator = (schema) => {
         // validate the request body against the schema
         try {
             const data = req.body;
-
+            
             let response = await schema.validateAsync(data, {abortEarly: false});
 
             console.log("Validation response: ", response);

@@ -1,5 +1,9 @@
 const joi = require('joi');
 
+const emailDTO = joi.string().email().required()
+const passwordDTO = joi.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*()_])[a-zA-Z\d!@#$%^&*()_]{8,25}$/).required()
+
+
 // DTO --> Data Transfer Object
 const RegisterDTO = joi.object({
     name: joi.string().required().min(3).max(50),
@@ -8,8 +12,8 @@ const RegisterDTO = joi.object({
     //     "string.min": "Name must be at least 3 characters long",
     //     "string.max": "Name must be at most 50 characters long",
     // }),
-    email: joi.string().email().required(),
-    password: joi.string().regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[\d])(?=.*[!@#$%^&*()_])[a-zA-Z\d!@#$%^&*()_]{8,25}$/).required(),    // TODO: Regex defined (min 1 small, 1 capital, 1 number, 1 special char, min 8 char and max 25 char)
+    email: emailDTO,
+    password: passwordDTO,    // TODO: Regex defined (min 1 small, 1 capital, 1 number, 1 special char, min 8 char and max 25 char)
     confirmPassword: joi.string().required().valid(joi.ref("password")).messages({
         'any.only': 'Password and confirmPassword must be same'
     }),    
@@ -25,7 +29,14 @@ const RegisterDTO = joi.object({
 })
 
 
+const LoginDTO = joi.object({
+    email: emailDTO,
+    password: passwordDTO
+})
+
+
 
 module.exports = {
     RegisterDTO,
+    LoginDTO
 }
