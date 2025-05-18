@@ -1,5 +1,7 @@
 const authRouter = require('express').Router();
+const bodyValidator = require('../../middlewares/request-validate.middleware.js');
 const AuthController = require("./auth.controller.js"); // import auth controller
+const { RegisterDTO } = require('./auth.validator.js');
 
 
 const authCtrl = new AuthController(); // create an instance of auth controller
@@ -23,7 +25,19 @@ const authCtrl = new AuthController(); // create an instance of auth controller
  */
 
 
- authRouter.post("/register", authCtrl.registerUser)
+// //  auth module
+// const validationHandle = (schema) => {
+//     return (req, res, next) => {
+//         console.log("validation middleware");
+        
+//     }
+// }
+
+// rules = {}
+
+//  authRouter.post("/register", validationHandle(rules), authCtrl.registerUser)
+
+authRouter.post("/register", bodyValidator(RegisterDTO), authCtrl.registerUser)
 
  // authRouter.post("/activate/:token", (req, res) => {
 authRouter.get("/activate/:token", authCtrl.activateUser);

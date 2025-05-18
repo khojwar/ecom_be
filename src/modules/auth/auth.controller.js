@@ -38,6 +38,9 @@ class AuthController {
     }
 
      loginUser = (req, res, next) => {
+        // get email and password from req.body
+        // if user not found 
+
         res.status(200).json({
             data: null,
             message: "You are loggedIn",

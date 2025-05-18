@@ -44,17 +44,28 @@ app.use("/api/v1/", router)
 
 // 404 route handler
 app.use((req, res, next) => {
-    res.status(404).json({
-        error: null,
+    next({
+        code: 404,
         message: "Resource not found",
-        status: "NOT_FOUND",
-        options: null,
+        status: "NOT_FOUND"
     })
 })
 
 
 // TODO: Error handling middleware  --> (200 status code bahek-ko sabai error haru handle garne)
+app.use((err, req, res, next) => {
+    let code = err.code || 500
+    let detail = err.detail || null
+    let message = err.message || "Internal server error"
+    let status = err.status || "SERVER_ERROR"
 
+    res.status(code).json({
+        error: detail,
+        message: message,
+        status: status,
+        options: null,
+    })
+})
 
 // mount this server on listen from server
 module.exports = app
