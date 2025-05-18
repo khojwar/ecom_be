@@ -34,12 +34,32 @@ const LoginDTO = joi.object({
     password: passwordDTO
 })
 
-const ResetPasswordRequestDTO = joi.object({
+const ForgetPasswordRequestDTO = joi.object({
     email: emailDTO
 })
+
+const ResetPasswordDTO = joi.object({
+    password: passwordDTO
+})
+
+const UpdateRegisterDTO = joi.object({
+    name: joi.string().required().min(3).max(50), 
+    phone: joi.string().regex(/^(?:\+977[- ]?)?(?:\d{1,3}[- ]?)?\d{6,10}$/).optional().allow("", null).default(null),
+    address: joi.object({
+        billingAddress: joi.string().max(100).allow("", null).default(null),
+        shippingAddress: joi.string().max(100).allow("", null).default(null),
+    }).allow("", null).default(null),
+    role: joi.string().regex(/^(customer|seller|admin)$/).default('customer'),
+    // gender: joi.string.allow('male', 'female', 'other').optional().default('null'),
+    gender: joi.string().regex(/^(male|female|other)$/).optional().default('null'),
+    image: joi.string().optional().allow("", null).default(null),
+})
+
 
 module.exports = {
     RegisterDTO,
     LoginDTO,
-    ResetPasswordRequestDTO
+    ForgetPasswordRequestDTO,
+    ResetPasswordDTO,
+    UpdateRegisterDTO
 }
