@@ -34,9 +34,12 @@ const LoginDTO = joi.object({
     password: passwordDTO
 })
 
-
+const ResetPasswordRequestDTO = joi.object({
+    email: emailDTO
+})
 
 module.exports = {
     RegisterDTO,
-    LoginDTO
+    LoginDTO,
+    ResetPasswordRequestDTO
 }
