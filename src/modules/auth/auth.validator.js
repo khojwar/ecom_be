@@ -26,6 +26,7 @@ const RegisterDTO = joi.object({
     // gender: joi.string.allow('male', 'female', 'other').optional().default('null'),
     gender: joi.string().regex(/^(male|female|other)$/).optional().default('null'),
     image: joi.string().optional().allow("", null).default(null),
+    dob: joi.date().optional().allow(null, "").default(null)
 })
 
 
@@ -53,6 +54,7 @@ const UpdateRegisterDTO = joi.object({
     // gender: joi.string.allow('male', 'female', 'other').optional().default('null'),
     gender: joi.string().regex(/^(male|female|other)$/).optional().default('null'),
     image: joi.string().optional().allow("", null).default(null),
+    dob: joi.date().optional().allow(null, "").default(null)
 })
 
 

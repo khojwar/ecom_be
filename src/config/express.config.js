@@ -59,6 +59,7 @@ app.use((err, req, res, next) => {
     let message = err.message || "Internal server error"
     let status = err.status || "SERVER_ERROR"
 
+    // TODO: Refactoring
     res.status(code).json({
         error: detail,
         message: message,
