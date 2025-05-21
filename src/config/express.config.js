@@ -1,6 +1,7 @@
 
 const express = require('express');
 const router = require("./router.config.js");
+const { deleteFile } = require('../utilities/helper.js');
 
 
 const app = express(); // create an express application 
@@ -60,6 +61,18 @@ app.use((err, req, res, next) => {
     let status = err.status || "SERVER_ERROR"
 
     // TODO: Refactoring
+
+    // single file upload and error comes then delete the file
+    if (req.file) {
+        deleteFile(req.file.path)
+    } else if (req.files) {
+        // multiple file upload and error comes then delete the files
+        req.files.forEach(file => {
+            deleteFile(file.path)
+        })
+    }
+    
+
     res.status(code).json({
         error: detail,
         message: message,
