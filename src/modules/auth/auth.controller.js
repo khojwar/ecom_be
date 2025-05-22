@@ -1,25 +1,30 @@
-const cloudinarySvc = require('../../services/cloudinary.service');
+
+const authServ = require('./auth.service');
 
 class AuthController {
     registerUser = async (req, res, next) => {
 
         try {
-                    const data = req.body;    // file data is not coming in req.body
+
+            const data = await authServ.transformUserCreate(req);
+
+            // TODO: DB operation
             
-                    // const file = req.file;   // single file data is coming in req.file        // {path: '', filename: '', mimetype: '', size: '', ....}
-            
-                    // const files = req.files;   // muliple file data is coming in req.files  
-                    
-                    data.image = await cloudinarySvc.fileUpload(req.file.path, '/user/');
-                    
-            
-                    res.status(200).json({
-                        data: data,
-                        // data: req.user,
-                        message: "You are register",
-                        status: "Success",
-                        options: null,
-                    })
+
+
+            // Email
+            await authServ.sendActivationNotification(data);
+
+
+
+            res.status(200).json({
+                data: data,
+                // data: req.user,
+                message: "You are register",
+                status: "Success",
+                options: null,
+            })
+ 
         } catch (exception) {
             next(exception);
         }
