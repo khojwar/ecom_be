@@ -1,4 +1,5 @@
 const authRouter = require('express').Router();
+const auth = require('../../middlewares/auth.middleware.js');
 const bodyValidator = require('../../middlewares/request-validate.middleware.js');
 const uploader = require('../../middlewares/uploader.middleware.js');
 const AuthController = require("./auth.controller.js"); // import auth controller
@@ -44,14 +45,16 @@ authRouter.get("/activate/:token", authCtrl.activateUser);
 
 authRouter.post("/login", bodyValidator(LoginDTO), authCtrl.loginUser)
 
+// loggedIn user can only access this route
+authRouter.get("/me", auth(), authCtrl.loggedInUserProfile)        // can be accessed by all logged in users
+// authRouter.get("/me", auth(["admin", "seller"]), authCtrl.loggedInUserProfile)      // only admin and seller can access this route
+
 authRouter.post("/forget-password", bodyValidator(ForgetPasswordRequestDTO), authCtrl.forgetPasswordRequest)
 authRouter.get("/forget-password-verify/:token", authCtrl.forgetPasswordVerify)
 authRouter.put("/reset-password", bodyValidator(ResetPasswordDTO), authCtrl.resetPassword)
 
-// loggedIn user can only access this route
-authRouter.get("/me", authCtrl.loggedInUserProfile)
 
-authRouter.get("/logout", authCtrl.logutUser)
+authRouter.get("/logout", authCtrl.logoutUser)
 authRouter.put("/user/:id",bodyValidator(UpdateRegisterDTO), authCtrl.updateUserById)
 
 

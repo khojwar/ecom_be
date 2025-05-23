@@ -179,6 +179,18 @@ class AuthService {
         throw exception;
       }
     }
+
+    getSingleUserByFilter = async (filter) => {
+      try {
+        const auth = await AuthModel.findOne(filter)
+        return auth;
+        
+      } catch (exception) {
+        console.log("Error in getSingleUserByFilter", exception);
+        throw exception; 
+      }
+    }
+        
 }
 
 const authServ = new AuthService();

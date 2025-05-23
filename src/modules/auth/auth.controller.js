@@ -196,14 +196,14 @@ class AuthController {
 
   loggedInUserProfile = (req, res, next) => {
     res.status(200).json({
-      data: null,
+      data: req.loggedInUser,
       message: "Me route",
       status: "Success",
       options: null,
     });
   };
 
-  logutUser = (req, res, next) => {
+  logoutUser = (req, res, next) => {
     res.status(200).json({
       data: null,
       message: "You are LoggedIn",
