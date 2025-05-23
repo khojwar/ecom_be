@@ -1,11 +1,11 @@
-const e = require("express");
 const { Status } = require("../../config/constant");
 const cloudinarySvc = require("../../services/cloudinary.service");
 const { randomStringGenerator } = require("../../utilities/helper");
 const bcryptjs = require("bcryptjs");
 const { AppConfig } = require("../../config/config");
 const emailSvc = require("../../services/email.service");
-const UserModel = require("../user/user.model");
+const AuthModel = require('./auth.model')
+
 
 class AuthService {
     async transformUserCreate(req) {
@@ -59,7 +59,6 @@ class AuthService {
         }
 
     }
-
 
     async sendActivationNotification(user) {
         try {
@@ -166,6 +165,17 @@ class AuthService {
         
       } catch (exception) {
         console.log("Error in newUserWelcomeEmail", exception);
+        throw exception;
+      }
+    }
+
+    createAuthData = async (data) => {
+      try {
+        const auth = new AuthModel(data);
+        return await auth.save();
+        
+      } catch (exception) {
+        console.log("Error in createAuthData", exception);
         throw exception;
       }
     }

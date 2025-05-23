@@ -4,6 +4,8 @@ const userSvc = require('../user/user.service');
 const authServ = require('./auth.service');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { randomStringGenerator } = require('../../utilities/helper');
+
 
 class AuthController {
   registerUser = async (req, res, next) => {
@@ -132,19 +134,31 @@ class AuthController {
        expiresIn: "1d",
       })
 
+      const maskedAccessToken = randomStringGenerator(150);
+      const maskedRefreshToken = randomStringGenerator(150);
+
+      const authData = {
+        user: userDetail._id,
+        accessToken,
+        refreshToken,
+        maskedAccessToken,
+        maskedRefreshToken,
+      }
+
+      await authServ.createAuthData(authData);
+
 
       res.json({
         data: {
-          accessToken,
-          refreshToken,
+          accessToken: maskedAccessToken,
+          refreshToken: maskedRefreshToken,
         },
         message: "You are loggedIn",
         status: "LOGGED_IN_SUCCESS",
         options: null,
       })
 
-      
-      
+
     } catch (exception) {
       next(exception);
       
