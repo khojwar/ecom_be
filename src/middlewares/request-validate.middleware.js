@@ -35,6 +35,7 @@ const bodyValidator = (schema) => {
                 let key = error.path.pop()
                 messageBag[key] = error.message
             })
+            
 
             next({
                 code: 400,

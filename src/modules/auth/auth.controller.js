@@ -1,6 +1,9 @@
 
+const { AppConfig } = require('../../config/config');
 const userSvc = require('../user/user.service');
 const authServ = require('./auth.service');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 
 class AuthController {
   registerUser = async (req, res, next) => {
@@ -71,16 +74,81 @@ class AuthController {
   };
 
 
-  loginUser = (req, res, next) => {
-    // get email and password from req.body
-    // if user not found
+  loginUser = async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
 
-    res.status(200).json({
-      data: null,
-      message: "You are loggedIn",
-      status: "Success",
-      options: null,
-    });
+      const userDetail = await userSvc.getSingleUserByFilter({
+        email
+      })
+
+      if (!userDetail) {
+        throw {
+          status: 422,
+          message: "Email not registered yet",
+          status: "EMAIL_NOT_REGISTERED",
+        }
+      }
+
+      // check password and is user is activated
+      if (!bcrypt.compareSync(password, userDetail.password)) {
+        throw {
+          status: 422,
+          message: "Credentials do not match",
+          status: "CREDENTIALS_DO_NOT_MATCH",
+        }
+      }
+
+      if (userDetail.status !== "ACTIVE" || userDetail.activationToken !== null) {
+        throw {
+          status: 422,
+          message: "User is not activated yet",
+          status: "USER_NOT_ACTIVATED",
+        }
+      }
+
+      // TODO: for 2FA 
+      // ----------- steps-----------:
+      // generate otp and send sms/email
+      // save otp in db
+      // check if otp is valid
+      // if valid, then generate jwt token and send to user
+
+
+      // ----------- generate jwt token -----------
+     // 1. access token  and  2. refresh token
+
+     const accessToken = jwt.sign({
+      sub: userDetail._id,
+      typ: "Bearer",
+     }, AppConfig.jwtSecret, {
+      expiresIn: "1h",
+     })
+
+      const refreshToken = jwt.sign({
+       sub: userDetail._id,
+       typ: "refresh",
+      }, AppConfig.jwtSecret, {
+       expiresIn: "1d",
+      })
+
+
+      res.json({
+        data: {
+          accessToken,
+          refreshToken,
+        },
+        message: "You are loggedIn",
+        status: "LOGGED_IN_SUCCESS",
+        options: null,
+      })
+
+      
+      
+    } catch (exception) {
+      next(exception);
+      
+    }
   };
 
   forgetPasswordRequest = (req, res, next) => {
