@@ -8,7 +8,7 @@ class AuthController {
       const data = await authServ.transformUserCreate(req);
 
       // insert data into db
-      let user = await authServ.createUser(data);
+      let user = await userSvc.createUser(data);
 
       // Email
       await authServ.sendActivationNotification(user);

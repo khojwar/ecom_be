@@ -60,16 +60,6 @@ class AuthService {
 
     }
 
-    async createUser(data) {
-      try {
-
-        const user = await UserModel.create(data);
-        return await user.save();
-        
-      } catch (exception) {
-        throw exception;
-      }
-    }
 
     async sendActivationNotification(user) {
         try {

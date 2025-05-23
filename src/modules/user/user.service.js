@@ -20,6 +20,17 @@ class UserService {
         }
     }
 
+    async createUser(data) {
+      try {
+
+        const user = await UserModel.create(data);
+        return await user.save();
+        
+      } catch (exception) {
+        throw exception;
+      }
+    }
+
     getSingleUserByFilter = async (filter) => {
         try {
             const userData = await UserModel.findOne(filter);
