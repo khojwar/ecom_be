@@ -3,6 +3,20 @@ const Status = {
     INACTIVE: "inactive",
 }
 
+const USER_ROLES = {
+    ADMIN: "admin",
+    CUSTOMER: "customer",
+    SELLER: "seller",
+}
+
+const GENDER = {
+    MALE: "male",
+    FEMALE: "female",
+    OTHER: "other"
+}
+
 module.exports = {
-    Status
+    Status,
+    USER_ROLES,
+    GENDER
 }

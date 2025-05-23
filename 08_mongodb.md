@@ -98,10 +98,22 @@ compass is a GUI software
     * core Feature
         - banners (web)  (SQL CRUD)
 
-        - brands
+        - brands 
+            - _id, name, slug, logo, status, createdBy, updatedBy, createdAt, updateAt
+
         - categories
-        - users --> admin, customer, seller
-        - Product --> title, description, price, discount, category, tag, stock, seller, brand
+            - _id, name, slug, parentId, icons, brands, status, createdBy, updatedBy, createdAt, updateAt
+
+        - users 
+            - admin, customer, seller
+            - _id, name, email, address, phone, gender, dob, password, role, status, activationToken,forgetPasswordToken, expiryTime, createdBy, updatedBy, createdAt, updateAt
+
+            - Pat (personal access token)
+                - id, userId, access, refreshToken, expiryToken, device
+
+        - Product 
+            - title, description, price, discount, category, tag, stock, seller, brand
+
         - orders
         - orderDetails
         - transactions

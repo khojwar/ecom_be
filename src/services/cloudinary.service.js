@@ -36,9 +36,9 @@ class CloudinaryService {
             });
 
             return {
-                secure_url,
-                public_id,
-                optimized_url: optimized,
+                secureUrl: secure_url,
+                publicId: public_id,
+                optimizedUrl: optimized,
             };
 
         } catch (exception) {
