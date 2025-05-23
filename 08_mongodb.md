@@ -1,3 +1,12 @@
+
+# Compass
+
+compass is a GUI software
+
+
+
+
+
 ## insert operation in mongo
 
 - `db.<collection>.insertOne(object)`
@@ -64,5 +73,55 @@
 - `db.<collection>.deleteOne(filter)`
 - `db.<collection>.deleteMany(filter)`
 
+
+
+
+## operations
+### ORM or ODM (object relational mapping/modelling or Object Document Mapping/modelling)
+- SQL ORM
+- NoSQL ODM
+
+    - for `mongodb` we use `mongoose` package
+
+#### Core
+- eg. mongodb
+
+
+## Install
+
+    npm i mongoose
+
+
+### Data Identity
+
+- Ecommerce Feature
+    * core Feature
+        - banners (web)  (SQL CRUD)
+
+        - brands
+        - categories
+        - users --> admin, customer, seller
+        - Product --> title, description, price, discount, category, tag, stock, seller, brand
+        - orders
+        - orderDetails
+        - transactions
+        - chat
+
+    * addon Features
+        - rate and review
+        - offers
+        - vouchar and coupons
+        - Blogs
+        - Inventory
+        - Logistics
+        - Return and Refunds
+        - Stocks      (stocks may come inside inventory)
+        - settings
+
+
+
+## dbdiagram.io
+
+Draw Entity-Relationship Diagrams, Painlessly 
 
 

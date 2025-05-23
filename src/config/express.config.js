@@ -1,5 +1,6 @@
 
 const express = require('express');
+require('./mongodb.config.js')
 const router = require("./router.config.js");
 const { deleteFile } = require('../utilities/helper.js');
 
