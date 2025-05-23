@@ -191,6 +191,15 @@ class AuthService {
       }
     }
         
+    getAllRowByFilter = async (filter) => {
+      try {
+        const auth = await AuthModel.find(filter)
+        return auth;
+      } catch (exception) {
+        console.log("Error in getAllRowByFilter", exception);
+        throw exception;
+      }
+    }
 }
 
 const authServ = new AuthService();

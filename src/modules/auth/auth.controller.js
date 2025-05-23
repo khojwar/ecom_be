@@ -5,6 +5,7 @@ const authServ = require('./auth.service');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { randomStringGenerator } = require('../../utilities/helper');
+const { message } = require('laravel-mix/src/Log');
 
 
 class AuthController {
@@ -115,6 +116,22 @@ class AuthController {
       // save otp in db
       // check if otp is valid
       // if valid, then generate jwt token and send to user
+
+
+      // ******* FOR: single user, single login ************
+      // const allAuthData = await authServ.getAllRowByFilter({
+      //   user: userDetail._id,
+      // })
+
+      // if (allAuthData.length > 0) {
+      //   throw {
+      //     code: 403,
+      //     message: "Logout from other devices first",
+      //     status: "LOGOUT_FROM_ALL_DEVICES",
+      //   }
+      // }
+
+
 
 
       // ----------- generate jwt token -----------
