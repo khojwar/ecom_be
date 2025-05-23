@@ -5,6 +5,7 @@ const { randomStringGenerator } = require("../../utilities/helper");
 const bcryptjs = require("bcryptjs");
 const { AppConfig } = require("../../config/config");
 const emailSvc = require("../../services/email.service");
+const UserModel = require("../user/user.model");
 
 class AuthService {
     async transformUserCreate(req) {
@@ -57,6 +58,17 @@ class AuthService {
             throw exception;
         }
 
+    }
+
+    async createUser(data) {
+      try {
+
+        const user = await UserModel.create(data);
+        return await user.save();
+        
+      } catch (exception) {
+        throw exception;
+      }
     }
 
     async sendActivationNotification(user) {

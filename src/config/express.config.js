@@ -73,6 +73,19 @@ app.use((err, req, res, next) => {
         })
     }
     
+    if (err.name === "MongoServerError") {
+        if (+err.code === 11000) {
+            code = 400
+            message = "Validation Failed"
+            status = "VALIDATION_FAILED"
+
+            detail = {}
+
+            Object.keys(err.keyValue).map((key) => {
+                detail[key] = `${key} already exists`
+            })
+        }
+    }
 
     res.status(code).json({
         error: detail,
