@@ -3,130 +3,141 @@ const userSvc = require('../user/user.service');
 const authServ = require('./auth.service');
 
 class AuthController {
-    registerUser = async (req, res, next) => {
+  registerUser = async (req, res, next) => {
+    try {
+      const data = await authServ.transformUserCreate(req);
 
-        try {
+      // insert data into db
+      let user = await authServ.createUser(data);
 
-            const data = await authServ.transformUserCreate(req);
+      // Email
+      await authServ.sendActivationNotification(user);
 
-            // insert data into db
-            let user = await authServ.createUser(data); 
-            
-            
+      res.status(200).json({
+        data: userSvc.getUserPublicProfile(user),
+        message:
+          "Thank you for registering, You have received an email for activation process. Please follow the email",
+        status: "Success",
+        options: null,
+      });
+    } catch (exception) {
+      next(exception);
+    }
+  };
 
+  activateUser = async (req, res, next) => {
+    try {
+            const token = req.params.token;  // OR  const {token} = req.params; 
+        
+            // let params = req.params;
+            // const header = req.headers;
+            // const query = req.query;
 
-            // Email
-            await authServ.sendActivationNotification(user);
+            // fetch user data from db by token
+            const userDetail = await userSvc.getSingleUserByFilter({
+                activationToken: token,
+            })
 
+            if (!userDetail) {
+                throw {
+                    status: 404,
+                    message: "User associated with token not found or has been already activated...",
+                    status: "NOT_FOUND",
+                }
+            }
 
+            // update user status to active
+            const updatedUser = await userSvc.updateSingleUserByFilter({
+                _id: userDetail._id,
+            }, {
+                status: "ACTIVE",
+                activationToken: null,
+            });
 
-            res.status(200).json({
-                data: userSvc.getUserPublicProfile(user),
-                message: "Thank you for registering, You have received an email for activation process. Please follow the email",
-                status: "Success",
+            await authServ.newUserWelcomeEmail(updatedUser)
+
+            res.json({
+                data: null,
+                message: "Your account has been activated successfully. Please login to continue ... ",
+                status: "ACTIVATED",
                 options: null,
             })
- 
-        } catch (exception) {
+
+    } catch (exception) {
+            console.log("Activation Error", exception);
             next(exception);
-        }
-     }
-
-     activateUser = (req, res) => {
-        console.log(req.params);
-        
-        // const {token} = req.params;    OR
-        const token = req.params.token; 
-        // console.log(token);
-    
-        let params = req.params;
-        const header = req.headers;
-        const query = req.query;
-        
-    
-        res.status(200).json({
-            // data: token,
-            data: {
-                params,
-                header,
-                query
-            },
-            message: "User activated successfully",
-            status: "success",
-            options: null 
-        })
     }
 
-     loginUser = (req, res, next) => {
-        // get email and password from req.body
-        // if user not found 
-
-        res.status(200).json({
-            data: null,
-            message: "You are loggedIn",
-            status: "Success",
-            options: null,
-        })
-    }
-
-     forgetPasswordRequest = (req, res, next) => {
-        res.status(200).json({
-            data: null,
-            message: "forget password route",
-            status: "Success",
-            options: null,
-        })
-    }
+  };
 
 
-     forgetPasswordVerify = (req, res, next) => {
-        const token = req.params.token;
-    
-        res.status(200).json({
-            data: token,
-            message: "You are loggedIn",
-            status: "Success",
-            options: null,
-        })
-    }
+  loginUser = (req, res, next) => {
+    // get email and password from req.body
+    // if user not found
 
-     resetPassword = (req, res, next) => {
-        res.status(200).json({
-            data: null,
-            message: "reset password route",
-            status: "Success",
-            options: null,
-        })
-    }
+    res.status(200).json({
+      data: null,
+      message: "You are loggedIn",
+      status: "Success",
+      options: null,
+    });
+  };
 
-     loggedInUserProfile = (req, res, next) => {
-        res.status(200).json({
-            data: null,
-            message: "Me route",
-            status: "Success",
-            options: null,
-        })
-    }
+  forgetPasswordRequest = (req, res, next) => {
+    res.status(200).json({
+      data: null,
+      message: "forget password route",
+      status: "Success",
+      options: null,
+    });
+  };
 
-     logutUser = (req, res, next) => {
-        res.status(200).json({
-            data: null,
-            message: "You are LoggedIn",
-            status: "Success",
-            options: null,
-        })
-    }
+  forgetPasswordVerify = (req, res, next) => {
+    const token = req.params.token;
 
-     updateUserById = (req, res, next) => {
+    res.status(200).json({
+      data: token,
+      message: "You are loggedIn",
+      status: "Success",
+      options: null,
+    });
+  };
 
-        res.status(200).json({
-            data: req.params.id,
-            message: "Update user Router",
-            status: "Success",
-            options: null,
-        })
-    }
+  resetPassword = (req, res, next) => {
+    res.status(200).json({
+      data: null,
+      message: "reset password route",
+      status: "Success",
+      options: null,
+    });
+  };
 
+  loggedInUserProfile = (req, res, next) => {
+    res.status(200).json({
+      data: null,
+      message: "Me route",
+      status: "Success",
+      options: null,
+    });
+  };
+
+  logutUser = (req, res, next) => {
+    res.status(200).json({
+      data: null,
+      message: "You are LoggedIn",
+      status: "Success",
+      options: null,
+    });
+  };
+
+  updateUserById = (req, res, next) => {
+    res.status(200).json({
+      data: req.params.id,
+      message: "Update user Router",
+      status: "Success",
+      options: null,
+    });
+  };
 }
 
 

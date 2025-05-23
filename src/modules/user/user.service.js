@@ -1,3 +1,4 @@
+const UserModel = require("./user.model");
 const { create } = require("./user.model");
 
 class UserService {
@@ -18,6 +19,30 @@ class UserService {
             updatedAt: user.updatedAt,
         }
     }
+
+    getSingleUserByFilter = async (filter) => {
+        try {
+            const userData = await UserModel.findOne(filter);
+            return userData;
+            
+        } catch (exception) {
+            console.log("Error in getSingleUserByFilter", exception);
+            throw exception;
+        }
+    }
+
+    async updateSingleUserByFilter (filter, data) {
+        try {
+            const userData = await UserModel.findOneAndUpdate(filter, {$set: data}, {new: true});
+            return userData;
+        } catch (exception) {
+            console.log("Error in updateSingleUserByFilter", exception);
+            throw exception;
+        }
+    }
+
+
+
 }
 
 const userSvc = new UserService();

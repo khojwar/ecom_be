@@ -39,10 +39,10 @@ const authCtrl = new AuthController(); // create an instance of auth controller
 //  authRouter.post("/register", validationHandle(rules), authCtrl.registerUser)
 
 authRouter.post("/register", uploader().single("image"), bodyValidator(RegisterDTO), authCtrl.registerUser)
-authRouter.post("/login", bodyValidator(LoginDTO), authCtrl.loginUser)
-
- // authRouter.post("/activate/:token", (req, res) => {
+// authRouter.post("/activate/:token", (req, res) => {
 authRouter.get("/activate/:token", authCtrl.activateUser);
+
+authRouter.post("/login", bodyValidator(LoginDTO), authCtrl.loginUser)
 
 authRouter.post("/forget-password", bodyValidator(ForgetPasswordRequestDTO), authCtrl.forgetPasswordRequest)
 authRouter.get("/forget-password-verify/:token", authCtrl.forgetPasswordVerify)
