@@ -82,7 +82,13 @@ const auth = (role = null) => {
 
         } catch (exception) {
             console.error("Auth Middleware Error:", exception);
-            next(exception);
+            // next(exception);
+            if (exception.hasOwnProperty("name") && exception.name === "TokenExpiredError") {
+                next({code: 401, message: exception.message, status: "TOKEN_EXPIRED"});
+            } else {
+                next(exception);
+            }
+                
         }
 
     }

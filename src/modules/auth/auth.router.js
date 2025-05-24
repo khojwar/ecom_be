@@ -49,12 +49,13 @@ authRouter.post("/login", bodyValidator(LoginDTO), authCtrl.loginUser)
 authRouter.get("/me", auth(), authCtrl.loggedInUserProfile)        // can be accessed by all logged in users
 // authRouter.get("/me", auth(["admin", "seller"]), authCtrl.loggedInUserProfile)      // only admin and seller can access this route
 
+authRouter.get("/logout", auth(), authCtrl.logoutUser)
+
 authRouter.post("/forget-password", bodyValidator(ForgetPasswordRequestDTO), authCtrl.forgetPasswordRequest)
 authRouter.get("/forget-password-verify/:token", authCtrl.forgetPasswordVerify)
 authRouter.put("/reset-password", bodyValidator(ResetPasswordDTO), authCtrl.resetPassword)
 
 
-authRouter.get("/logout", authCtrl.logoutUser)
 authRouter.put("/user/:id",bodyValidator(UpdateRegisterDTO), authCtrl.updateUserById)
 
 

@@ -200,6 +200,53 @@ class AuthService {
         throw exception;
       }
     }
+
+    logoutUser = async (token) => {
+      try {
+        // current senario: user is logged in from multiple devices
+        // 1. logout from all devices
+        // 2. logout from single device
+
+        // //////////////////////////////////////////////
+        // ********** 1. logout from single device *********
+        // //////////////////////////////////////////////
+
+        const AccessToken = token.replace("Bearer ", "");
+        const authData = await this.getSingleUserByFilter({
+          maskedAccessToken: AccessToken,
+        })
+
+        if (!authData) {
+          throw {
+            status: 401,
+            message: "Token invalid",
+            status: "INVALID_TOKEN",
+          }
+        }
+
+        // delete token from db
+        const authDel = await AuthModel.findOneAndDelete({maskedAccessToken: AccessToken})
+        return authDel;
+
+
+        // //////////////////////////////////////////////
+        // ********** 2. logout from all devices *********
+        // //////////////////////////////////////////////
+
+        // const loggedInUser = req.loggedInUser;
+        // const userId = loggedInUser._id;
+
+        // // delete all tokens of the user
+        // const authDel = await AuthModel.deleteMany({user: userId})
+        // return authDel;
+
+        
+        
+      } catch (exception) {
+        console.log("Error in logoutUser", exception);
+        throw exception;
+      }
+    }
 }
 
 const authServ = new AuthService();

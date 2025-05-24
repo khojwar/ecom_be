@@ -220,13 +220,27 @@ class AuthController {
     });
   };
 
-  logoutUser = (req, res, next) => {
-    res.status(200).json({
-      data: null,
-      message: "You are LoggedIn",
-      status: "Success",
-      options: null,
-    });
+  logoutUser = async (req, res, next) => {
+    try {
+      await authServ.logoutUser(req.headers['authorization']);
+      res.json({
+        data: null,
+        message: "You are logged out successfully",
+        status: "LOGGED_OUT_SUCCESS",
+        options: null,
+      })
+      
+      res.json({
+        data: null,
+        message: "You are logged out successfully",
+        status: "LOGGED_OUT_SUCCESS",
+        options: null,
+      })
+
+    } catch (exception) {
+      next(exception);
+      
+    }
   };
 
   updateUserById = (req, res, next) => {
