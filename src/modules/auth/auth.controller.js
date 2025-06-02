@@ -5,7 +5,6 @@ const authServ = require('./auth.service');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { randomStringGenerator } = require('../../utilities/helper');
-const { message } = require('laravel-mix/src/Log');
 
 
 class AuthController {
@@ -251,6 +250,100 @@ class AuthController {
       options: null,
     });
   };
+
+  refreshToken = async (req, res, next) => {
+    try {
+      let token = req.headers['authorization'];
+      
+      token = token.replace("Refresh ", "");
+
+      if (!token) {
+        throw {
+          code: 401,
+          message: "Token is required",
+          status: "TOKEN_REQUIRED",
+      }
+    }
+
+    const authToken = await authServ.getSingleUserByFilter({
+      maskedRefreshToken: token,
+    })
+
+    if (!authToken) {
+      throw {
+        code: 401,
+        message: "Invalid token",
+        status: "INVALID_TOKEN",
+      }
+    }
+
+    const data = jwt.verify(authToken.refreshToken, AppConfig.jwtSecret)
+    const userDetail = await userSvc.getSingleUserByFilter({
+      _id: data.sub,
+    })
+
+    if (!userDetail) {
+      throw {
+        code: 422, 
+        message: "User not found",
+        status: "USER_NOT_FOUND"
+      }
+    }
+
+    const accessToken = jwt.sign({
+      sub: userDetail._id,
+      typ: "Bearer",
+     }, AppConfig.jwtSecret, {
+      expiresIn: "1h",
+     })
+
+      const refreshToken = jwt.sign({
+       sub: userDetail._id,
+       typ: "refresh",
+      }, AppConfig.jwtSecret, {
+       expiresIn: "1d",
+      })
+
+      const maskedAccessToken = randomStringGenerator(150);
+      const maskedRefreshToken = randomStringGenerator(150);
+
+      const authData = {
+        accessToken,
+        refreshToken,
+        maskedAccessToken,
+        maskedRefreshToken,
+      }
+
+      await authServ.updateSingleRowByFilter({
+        _id: authToken._id,
+      }, authData);
+
+      res.json({
+        data: {
+          accessToken: authData.maskedAccessToken,
+          refreshToken: authData.maskedRefreshToken,
+        },
+        message: "New access token and refresh token generated successfully",
+        status: "TOKEN_REFRESHED",
+        options: null,
+      });
+
+
+
+    // TODO: time: 10min
+        
+    } catch (exception) {
+      if (exception.hasOwnProperty('name') && exception.name === 'TokenExpiredError') {
+        next({
+          code: 401,
+          message: exception.message,
+          status: "TOKEN_EXPIRED",
+        });
+      } else {
+        next(exception)
+      }
+    }
+  }
 }
 
 

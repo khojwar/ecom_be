@@ -247,6 +247,15 @@ class AuthService {
         throw exception;
       }
     }
+
+    updateSingleRowByFilter = async (filter, data) => {
+      try {
+        const response = await AuthModel.findOneAndUpdate(filter, {$set: data}, {new: true});
+        return response;
+      } catch (exception) {
+        throw exception;
+      }
+    }
 }
 
 const authServ = new AuthService();

@@ -30,6 +30,8 @@ class EmailService {
 
     sendEmail = async ({to, sub, msg, cc=null, bcc=null, attachments=null}) => {
         try {
+            // console.log("Sending email ... ", {to, sub, msg, cc, bcc, attachments});
+            
             let msgBody ={
                 to: to,
                 from: SMTPConfig.from,
@@ -49,8 +51,11 @@ class EmailService {
                 msgBody.attachments = attachments;
             }
 
+            // console.log("Email message body: ", msgBody);
+            
+
             let response = await this.#transport.sendMail(msgBody);
-            console.log({response});
+            // console.log("response:...", {response});
 
             return response;
             

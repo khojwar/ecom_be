@@ -51,6 +51,8 @@ authRouter.get("/me", auth(), authCtrl.loggedInUserProfile)        // can be acc
 
 authRouter.get("/logout", auth(), authCtrl.logoutUser)
 
+authRouter.get("/refresh", authCtrl.refreshToken)
+
 authRouter.post("/forget-password", bodyValidator(ForgetPasswordRequestDTO), authCtrl.forgetPasswordRequest)
 authRouter.get("/forget-password-verify/:token", authCtrl.forgetPasswordVerify)
 authRouter.put("/reset-password", bodyValidator(ResetPasswordDTO), authCtrl.resetPassword)
