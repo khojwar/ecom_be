@@ -3,7 +3,7 @@ const auth = require('../../middlewares/auth.middleware.js');
 const bodyValidator = require('../../middlewares/request-validate.middleware.js');
 const uploader = require('../../middlewares/uploader.middleware.js');
 const AuthController = require("./auth.controller.js"); // import auth controller
-const { RegisterDTO, LoginDTO, ForgetPasswordRequestDTO, ResetPasswordDTO, UpdateRegisterDTO } = require('./auth.validator.js');
+const { RegisterDTO, LoginDTO, ForgetPasswordRequestDTO, ResetPasswordDTO, UpdateRegisterDTO, ResetPasswordDataDTO } = require('./auth.validator.js');
 
 
 const authCtrl = new AuthController(); // create an instance of auth controller
@@ -54,9 +54,8 @@ authRouter.get("/logout", auth(), authCtrl.logoutUser)
 authRouter.get("/refresh", authCtrl.refreshToken)
 
 authRouter.post("/forget-password", bodyValidator(ForgetPasswordRequestDTO), authCtrl.forgetPasswordRequest)
-authRouter.get("/forget-password-verify/:token", authCtrl.forgetPasswordVerify)
-authRouter.put("/reset-password", bodyValidator(ResetPasswordDTO), authCtrl.resetPassword)
-
+authRouter.get("/forget-password-token-verify/:token", authCtrl.forgetPasswordTokenVerify)
+authRouter.put("/reset-password", bodyValidator(ResetPasswordDataDTO), authCtrl.resetPassword)
 
 authRouter.put("/user/:id",bodyValidator(UpdateRegisterDTO), authCtrl.updateUserById)
 

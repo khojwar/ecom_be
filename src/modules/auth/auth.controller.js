@@ -181,34 +181,120 @@ class AuthController {
     }
   };
 
-  forgetPasswordRequest = (req, res, next) => {
-    res.status(200).json({
-      data: null,
-      message: "forget password route",
-      status: "Success",
-      options: null,
-    });
+  // ----------------------------------------
+  // steps:
+  // 1. forget password request + send email with token
+  // 2. verify token
+  // 3. reset password
+
+
+
+  forgetPasswordRequest = async (req, res, next) => {
+    try {
+      const { email } = req.body;
+
+      const userDetail = await userSvc.getSingleUserByFilter({
+        email,
+      })
+
+      if (!userDetail) {
+        throw {
+          code: 400,
+          detail: {
+            email: "User not registered yet",
+          },
+          message: "User not registered yet",
+          status: "USER_NOT_FOUND",
+        }
+      }
+
+      // request for forget password using email or phone number 
+
+      const forgetData = {
+        forgetPasswordToken: randomStringGenerator(150),
+        expiryTime: new Date(Date.now() + 3*60 * 60 * 1000), // 3 hours from now
+      }
+
+      const updatedUser = await userSvc.updateSingleUserByFilter({
+        _id: userDetail._id,
+      }, forgetData)
+
+      await authServ.sendPasswordResetRequestEmail(updatedUser);
+      
+      res.json({
+        data: null,
+        message: "Forget password request has been sent successfully. Please check your email for further instructions.",
+        status: "FORGET_PASSWORD_REQUESTED",
+        options: null,
+      })
+
+
+    } catch (exception) {
+      next(exception);
+      
+    }
   };
 
-  forgetPasswordVerify = (req, res, next) => {
-    const token = req.params.token;
+  forgetPasswordTokenVerify = async (req, res, next) => {
+    try {
+      let token = req.params.token;  // OR  const {token} = req.params; 
 
-    res.status(200).json({
-      data: token,
-      message: "You are loggedIn",
-      status: "Success",
-      options: null,
-    });
+      const userDetail = await authServ.verifyPasswordResetToken(token);
+
+      res.json({
+        data: token,
+        message: "Token verified successfully",
+        status: "SUCCESS",
+        options: null,
+      })
+      
+
+
+    } catch (exception) {
+      next(exception);
+      
+    }
   };
 
-  resetPassword = (req, res, next) => {
-    res.status(200).json({
-      data: null,
-      message: "reset password route",
-      status: "Success",
-      options: null,
-    });
+  resetPassword = async (req, res, next) => {
+    try {
+      
+      let token = req.headers.authorization;
+      token = token.replace("Bearer ", "");
+
+      const userDetail = await authServ.verifyPasswordResetToken(token);
+      const hashedPassword = bcrypt.hashSync(req.body.password, 10);
+
+      await userSvc.updateSingleUserByFilter({
+        _id: userDetail._id,
+      }, {
+        password: hashedPassword,
+        forgetPasswordToken: null,
+        expiryTime: null,
+      });
+
+      // logout user from all devices
+      await authServ.logoutFromAllDevices({
+        user: userDetail._id,
+      })
+
+      // send email notification
+      await authServ.sendPasswordResetSuccessEmail(userDetail);
+
+      res.json({
+        data: null,
+        message: "Password reset successfully",
+        status: "PASSWORD_RESET_SUCCESS",
+        options: null,
+      });
+
+    } catch (exception) {
+      next(exception);
+
+    }
   };
+
+  // ----------------------------------
 
   loggedInUserProfile = (req, res, next) => {
     res.status(200).json({

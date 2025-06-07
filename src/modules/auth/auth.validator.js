@@ -57,11 +57,21 @@ const UpdateRegisterDTO = joi.object({
     dob: joi.date().optional().allow(null, "").default(null)
 })
 
+const ResetPasswordDataDTO = joi.object({
+    password: passwordDTO,
+    confirmPassword: joi.string().required().equal(joi.ref("password")).messages({
+        'any.only': 'Password and confirmPassword must be same'
+    }),  
+})
+
+
+
 
 module.exports = {
     RegisterDTO,
     LoginDTO,
     ForgetPasswordRequestDTO,
     ResetPasswordDTO,
-    UpdateRegisterDTO
+    UpdateRegisterDTO,
+    ResetPasswordDataDTO,
 }
