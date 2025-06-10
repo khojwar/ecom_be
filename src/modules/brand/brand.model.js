@@ -30,13 +30,13 @@ const brandSchema = new mongoose.Schema(
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        default: null,
+        ref: 'User',
+        default: null
     },
     updatedBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        default: null,
+        ref: 'User',
+        default: null
     },
   },
   {

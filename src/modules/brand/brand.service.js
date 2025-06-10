@@ -7,8 +7,12 @@ class BrandService extends BaseService {
     async transformBrandCreateData(req) {
         try {
             const data = req.body;
-            data.createdBy = req.loggedInUser._id;
+            console.log("req.loggedInUser: ", req.loggedInUser);
+            
+            data.createdBy = req.loggedInUser._id; // user id from auth middleware
+            data.updatedBy = req.loggedInUser._id; // user id from auth middleware
 
+             // upload to cloudinary 
             if (req.file) {
                 data.logo = await cloudinarySvc.fileUpload(req.file.path, '/brand/')
             }
@@ -28,10 +32,39 @@ class BrandService extends BaseService {
         }
     }
 
-    read() {}
+    publicBrandData = (row) => {
+                return {
+                    _id: row._id,
+                    name: row.name,
+                    slug: row.status,
+                    logo: row.logo.optimizedUrl,
+                    createdBy: {
+                        _id: row.createdBy._id,
+                        name: row.createdBy.name,
+                        email: row.createdBy.email,
+                        role: row.createdBy.role,
+                        status: row.createdBy.status,
+                        image: row.createdBy.image.optimizedUrl
+                    },
+                }
+            }
+
+    async listAllRowsByFilter() {
+        try {
+            const data = await this.model.find()
+                .populate('createdBy', ['_id', 'email', 'image', 'role', 'status'])
+                .populate('updatedBy', ['_id', 'email', 'image', 'role', 'status'])
+            
+            return data.map(this.publicBrandData);
+
+
+        } catch (exception) {
+            throw exception;
+        }
+    }
 
     update() {}
-
+    view() {}
     delete() {}
 }
 

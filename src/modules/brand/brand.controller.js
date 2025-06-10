@@ -1,5 +1,6 @@
 const { options } = require("joi");
 const brandSvc = require("./brand.service");
+const { message } = require("laravel-mix/src/Log");
 
 class BrandController {
 
@@ -24,55 +25,75 @@ class BrandController {
         }
     }
 
-    updateBrand = async (req, res) => {
+    async listAllBrands (req, res, next) {
         try {
-            const { id } = req.params;
-            const { name, slug } = req.body;
-            const brand = await this.brandService.updateBrand(id, { name, slug });
-            return res.status(200).json(brand);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
+            const data = await brandSvc.listAllRowsByFilter()
+            
+            res.json({
+                data: data,
+                message: "All brand data",
+                status: "BRAND_LIST_SUCCESS",
+                options: null
+            })
+        } catch (exception) {
+            throw exception;
         }
     }
 
-    listAllBrands = async (req, res) => {
-        try {
-            const brands = await this.brandService.listAllBrands();
-            return res.status(200).json(brands);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
-        }
-    }
+    
 
-    viewBrandDetails = async (req, res) => {
-        try {
-            const { id } = req.params;
-            const brand = await this.brandService.viewBrandDetails(id);
-            return res.status(200).json(brand);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
-        }
-    }
 
-    deleteBrand = async (req, res) => {
-        try {
-            const { id } = req.params;
-            await this.brandService.deleteBrand(id);
-            return res.status(204).send();
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
-        }
-    }
 
-    readbyUrl = async (req, res) => {
-        try {
-            const { slug } = req.params;
-            const brand = await this.brandService.readByUrl(slug);
-            return res.status(200).json(brand);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
-        }
-    }
+    // updateBrand = async (req, res) => {
+    //     try {
+    //         const { id } = req.params;
+    //         const { name, slug } = req.body;
+    //         const brand = await this.brandService.updateBrand(id, { name, slug });
+    //         return res.status(200).json(brand);
+    //     } catch (error) {
+    //         return res.status(500).json({ error: error.message });
+    //     }
+    // }
+
+    // listAllBrands = async (req, res) => {
+    //     try {
+    //         const brands = await this.brandService.listAllBrands();
+    //         return res.status(200).json(brands);
+    //     } catch (error) {
+    //         return res.status(500).json({ error: error.message });
+    //     }
+    // }
+
+    // viewBrandDetails = async (req, res) => {
+    //     try {
+    //         const { id } = req.params;
+    //         const brand = await this.brandService.viewBrandDetails(id);
+    //         return res.status(200).json(brand);
+    //     } catch (error) {
+    //         return res.status(500).json({ error: error.message });
+    //     }
+    // }
+
+
+    // deleteBrand = async (req, res) => {
+    //     try {
+    //         const { id } = req.params;
+    //         await this.brandService.deleteBrand(id);
+    //         return res.status(204).send();
+    //     } catch (error) {
+    //         return res.status(500).json({ error: error.message });
+    //     }
+    // }
+
+    // readbyUrl = async (req, res) => {
+    //     try {
+    //         const { slug } = req.params;
+    //         const brand = await this.brandService.readByUrl(slug);
+    //         return res.status(200).json(brand);
+    //     } catch (error) {
+    //         return res.status(500).json({ error: error.message });
+    //     }
+    // }
 
 }
 

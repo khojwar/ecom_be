@@ -69,6 +69,7 @@ const auth = (role = null) => {
             
             if (userDetail.role === USER_ROLES.ADMIN || role === null || (Array.isArray(role) && role.includes(userDetail.role))) {
                 req.loggedInUser = userDetail; 
+                console.log("req.loggedInUser middleware: ", req.loggedInUser);
                 next();
             } else {
                 throw {

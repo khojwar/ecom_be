@@ -21,5 +21,5 @@ const brandCtr = require("./brand.controller.js");
 
 brandRouter.route("/")
     .post(auth([USER_ROLES.ADMIN]), uploader().single('logo'), bodyValidator(BrandCreateDTO), brandCtr.createBrand)
-
+    .get(brandCtr.listAllBrands)
 module.exports = brandRouter;
