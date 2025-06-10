@@ -1,3 +1,6 @@
+const { options } = require("joi");
+const brandSvc = require("./brand.service");
+
 class BrandController {
 
     /**
@@ -5,13 +8,19 @@ class BrandController {
      * read by url (string-slug => /:id, /:slug)
      */
 
-    createBrand = async (req, res) => {
+    createBrand = async (req, res, next) => {
         try {
-            const { name, slug } = req.body;
-            const brand = await this.brandService.createBrand({ name, slug });
-            return res.status(201).json(brand);
-        } catch (error) {
-            return res.status(500).json({ error: error.message });
+            const payload  = await brandSvc.transformBrandCreateData(req)
+            const brand = await brandSvc.create(payload);
+            
+            res.json({
+                data: brand,
+                message: "Brand created successfully",
+                status: "Ok",
+                options: null
+            })
+        } catch (exception) {
+            next(exception);
         }
     }
 
@@ -67,4 +76,6 @@ class BrandController {
 
 }
 
-module.exports = { BrandController };
+
+const brandCtr = new BrandController();
+module.exports = brandCtr;

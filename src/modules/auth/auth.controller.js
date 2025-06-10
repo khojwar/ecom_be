@@ -329,12 +329,15 @@ class AuthController {
   };
 
   updateUserById = (req, res, next) => {
-    res.status(200).json({
-      data: req.params.id,
-      message: "Update user Router",
-      status: "Success",
-      options: null,
-    });
+    try {
+      let userId = req.params.id;
+
+      // TODO:
+      
+      
+    } catch (exception) {
+      throw exception;
+    }
   };
 
   refreshToken = async (req, res, next) => {

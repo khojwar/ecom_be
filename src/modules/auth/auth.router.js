@@ -57,8 +57,11 @@ authRouter.post("/forget-password", bodyValidator(ForgetPasswordRequestDTO), aut
 authRouter.get("/forget-password-token-verify/:token", authCtrl.forgetPasswordTokenVerify)
 authRouter.put("/reset-password", bodyValidator(ResetPasswordDataDTO), authCtrl.resetPassword)
 
-authRouter.put("/user/:id",bodyValidator(UpdateRegisterDTO), authCtrl.updateUserById)
-
+// TODO:
+// Logged in user can update their profile
+// permission only to admin
+// does not allow to update role, email, password
+authRouter.put("/user/:id", auth(["admin"]), uploader().single("image"), bodyValidator(UpdateRegisterDTO), authCtrl.updateUserById)
 
 
 module.exports = authRouter; // export the auth router

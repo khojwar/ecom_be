@@ -1,0 +1,32 @@
+- Ecommerce feature
+    * Core feature
+        - banners
+          -id, url, size
+        - brands
+          -id, name, slug, status, created_by, updated_by, created_at, updated_at, 
+        - categories
+          - id, name, slug, status, icons, parentId, brands, created_by, updated_by, created_at, updated_at, 
+        - users
+          - _id, name, email, address, phone, gender, dob, password, status, activationToken, forgetPasswordToken, expiryTime, created_by, updated_by, created_at, updated_at, 
+          -pat
+            _id, userId, accesss, refreshToken, expiryToken, deviceInfomation
+        - product
+          - title, description, price, discount, castegory, tag, stock, seller, brand
+        - orders
+          - id, user_id, price
+        - orderDetails
+          - id, order_id, product_id, quantity, unit_price, total_price
+        - transcations
+          - id, user_id, 
+        - chat
+          -receiver_id, sender_id, time, message, 
+    * Addon Features
+        - rate and reviewoffers
+        - offers
+        - voucher and coupons
+        - blogs
+        - Inventory
+        - Logitics
+        - Return adn Refund
+        - Stocks
+        - Settings

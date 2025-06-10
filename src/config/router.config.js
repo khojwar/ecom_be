@@ -18,6 +18,7 @@ router.get("/", (req, res) => {
 router.use("/auth", authRouter); // mount auth router on /auth path
 router.use("/user", userRouter); 
 router.use("/brand", brandRouter)
+
 router.use("/product", productRouter);
 router.use("/category", categoryRouter);
 

@@ -12,8 +12,7 @@ const auth = (role = null) => {
     return async (req, res, next) => {
         try {
             let token = req.headers["authorization"];
-
-        
+            
             if (!token) {
                 throw {
                     status: 401,
@@ -24,7 +23,6 @@ const auth = (role = null) => {
 
             // Bearer token  => "token"
             token = token.replace("Bearer ", "");
-
 
             // db token
             const authData = await authServ.getSingleUserByFilter({
@@ -43,8 +41,7 @@ const auth = (role = null) => {
             
             const decodedData = jwt.verify(authData.accessToken, AppConfig.jwtSecret)
 
-            // console.log("data...: ", decodedData);
-
+            // console.log("decodedData: ", decodedData);
 
             if (decodedData.typ !== "Bearer") {
                 throw {
@@ -54,7 +51,6 @@ const auth = (role = null) => {
                 }
             }
             
-
             let userDetail = await userSvc.getSingleUserByFilter({
                 _id: decodedData.sub,
             })
@@ -69,6 +65,8 @@ const auth = (role = null) => {
 
             userDetail = userSvc.getUserPublicProfile(userDetail);
 
+            // console.log("userDetail: ", userDetail);
+            
             if (userDetail.role === USER_ROLES.ADMIN || role === null || (Array.isArray(role) && role.includes(userDetail.role))) {
                 req.loggedInUser = userDetail; 
                 next();

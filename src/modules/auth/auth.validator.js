@@ -65,8 +65,6 @@ const ResetPasswordDataDTO = joi.object({
 })
 
 
-
-
 module.exports = {
     RegisterDTO,
     LoginDTO,
