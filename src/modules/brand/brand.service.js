@@ -49,13 +49,30 @@ class BrandService extends BaseService {
                 }
             }
 
-    async listAllRowsByFilter() {
+    async listAllRowsByFilter(query, filter = {}) {
         try {
-            const data = await this.model.find()
-                .populate('createdBy', ['_id', 'email', 'image', 'role', 'status'])
-                .populate('updatedBy', ['_id', 'email', 'image', 'role', 'status'])
+            const page = +query.page || 1;
+            const limit = +query.limit || 10;
+            const skip = (page - 1) * limit;
+
+            const data = await this.model.find(filter)
+                .populate('createdBy', ['_id', 'name', 'email', 'image', 'role', 'status'])
+                .populate('updatedBy', ['_id', 'name', 'email', 'image', 'role', 'status'])
+                .sort({createdAt: "desc"})
+                .skip(skip)
+                .limit(limit)
             
-            return data.map(this.publicBrandData);
+            const count = await this.model.countDocuments(filter);
+
+            return {
+                data: data.map(this.publicBrandData),
+                pagination: {
+                    current: page,
+                    limit: limit,
+                    total: count,
+                    totalPages: Math.ceil(count / limit),
+                    }
+            };
 
 
         } catch (exception) {

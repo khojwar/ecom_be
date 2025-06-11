@@ -27,20 +27,35 @@ class BrandController {
 
     async listAllBrands (req, res, next) {
         try {
-            const data = await brandSvc.listAllRowsByFilter()
+            let filter = {};
+            if (req.query.search) {
+                filter = {
+                    ...filter,
+                    name: new RegExp(req.query.search, 'i') 
+                }
+            }
+
+            if (req.query.status) {
+                filter = {
+                    ...filter,
+                    status: req.query.status
+                }
+            }
+
+            const {data, pagination} = await brandSvc.listAllRowsByFilter(req.query, filter);
             
             res.json({
                 data: data,
                 message: "All brand data",
                 status: "BRAND_LIST_SUCCESS",
-                options: null
+                options: {pagination}
             })
         } catch (exception) {
             throw exception;
         }
     }
 
-    
+
 
 
 
