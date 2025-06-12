@@ -55,60 +55,137 @@ class BrandController {
         }
     }
 
+    // async #getBrandDetail(brandId) {
+    //     this.#brandDetail = await brandSvc.getSingleRowByFilter({
+    //         _id: brandId
+    //     });
 
-
-
-
-    // updateBrand = async (req, res) => {
-    //     try {
-    //         const { id } = req.params;
-    //         const { name, slug } = req.body;
-    //         const brand = await this.brandService.updateBrand(id, { name, slug });
-    //         return res.status(200).json(brand);
-    //     } catch (error) {
-    //         return res.status(500).json({ error: error.message });
+    //     if (!this.#brandDetail) {
+    //         throw {
+    //             code: 422,
+    //             message: "Brand does not exist",
+    //             status: "BRAND_NOT_FOUND"
+    //         }
     //     }
     // }
 
-    // listAllBrands = async (req, res) => {
-    //     try {
-    //         const brands = await this.brandService.listAllBrands();
-    //         return res.status(200).json(brands);
-    //     } catch (error) {
-    //         return res.status(500).json({ error: error.message });
-    //     }
-    // }
+    async getBrandDetailsById (req, res, next) {
+        try {
+            const brandId = req.params.brandId;
+            const brandDetail = await brandSvc.getSingleRowByFilter({
+                _id: brandId
+            });
 
-    // viewBrandDetails = async (req, res) => {
-    //     try {
-    //         const { id } = req.params;
-    //         const brand = await this.brandService.viewBrandDetails(id);
-    //         return res.status(200).json(brand);
-    //     } catch (error) {
-    //         return res.status(500).json({ error: error.message });
-    //     }
-    // }
+            if (!brandDetail) {
+                throw {
+                    code: 422,
+                    message: "Brand does not exist",
+                    status: "BRAND_NOT_FOUND"
+                }
+            }
+            res.json({
+                data: brandDetail,
+                message: "Brand details",
+                status: "BRAND_DETAILS_FETCHED",
+                options: null
+            })
+            
+        } catch (exception) {
+            next(exception);   
+        }
+    }
+    
+    async updateBrandById (req, res, next) {
+        try {
+            let brandId = req.params.brandId;
 
+            const brandDetail = await brandSvc.getSingleRowByFilter({ _id: brandId });
 
-    // deleteBrand = async (req, res) => {
-    //     try {
-    //         const { id } = req.params;
-    //         await this.brandService.deleteBrand(id);
-    //         return res.status(204).send();
-    //     } catch (error) {
-    //         return res.status(500).json({ error: error.message });
-    //     }
-    // }
+            if (!brandDetail) {
+                throw {
+                    code: 422,
+                    message: "Brand does not exist",
+                    status: "BRAND_NOT_FOUND"
+                }
+            }
 
-    // readbyUrl = async (req, res) => {
-    //     try {
-    //         const { slug } = req.params;
-    //         const brand = await this.brandService.readByUrl(slug);
-    //         return res.status(200).json(brand);
-    //     } catch (error) {
-    //         return res.status(500).json({ error: error.message });
-    //     }
-    // }
+            // console.log("brandDetail: ", brandDetail);
+            
+            const payload = await brandSvc.transformBrandUpdateData(req, brandDetail);
+            const update = await brandSvc.updateSingleRowByFilter({"_id": brandDetail._id}, payload);
+
+            res.json({
+                data: update,
+                message: "Brand updated successfully",
+                status: "BRAND_UPDATED",
+                options: null
+            })
+            
+        } catch (exception) {
+            // console.log("updateBrandById exception: ", exception);
+            next(exception);  
+        }
+    }
+
+    async deleteBrandById (req, res, next) {
+        try {
+            const brandId = req.params.brandId;
+            const brandDetail = await brandSvc.getSingleRowByFilter({ _id: brandId });
+
+            if (!brandDetail) {
+                throw {
+                    code: 422,
+                    message: "Brand does not exist",
+                    status: "BRAND_NOT_FOUND"
+                }
+            }
+
+            console.log("brandDetail: ", brandDetail);
+
+            const deletedRow = await brandSvc.deleteSingleRowByFilter({ _id: brandId });
+
+            res.json({
+                data: deletedRow,
+                message: "Brand deleted successfully",
+                status: "BRAND_DELETED",
+                options: null
+            })
+            
+        } catch (exception) {
+            next(exception);
+        }
+    }
+
+    async getBrandDetailWithProducts (req, res, next) {
+        try {
+            const slug = req.params.slug;
+            const brandDetail = await brandSvc.getSingleRowByFilter({ slug: slug });
+
+            if (!brandDetail) {
+                throw {
+                    code: 422,
+                    message: "Brand does not exist",
+                    status: "BRAND_NOT_FOUND"
+                }
+            }
+
+            // TODO: Product
+
+            res.json({
+                data: {
+                    brandDetail: brandDetail,
+                    products: null,
+                },
+                message: "Brand details with products",
+                status: "BRAND_DETAILS_FETCHED",
+                options: null
+            })
+            
+        } catch (exception) {
+            next(exception);
+            
+        }
+    }
 
 }
 

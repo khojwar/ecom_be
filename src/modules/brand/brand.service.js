@@ -7,12 +7,10 @@ class BrandService extends BaseService {
     async transformBrandCreateData(req) {
         try {
             const data = req.body;
-            console.log("req.loggedInUser: ", req.loggedInUser);
             
             data.createdBy = req.loggedInUser._id; // user id from auth middleware
-            data.updatedBy = req.loggedInUser._id; // user id from auth middleware
-
-             // upload to cloudinary 
+            
+            // upload to cloudinary 
             if (req.file) {
                 data.logo = await cloudinarySvc.fileUpload(req.file.path, '/brand/')
             }
@@ -32,11 +30,31 @@ class BrandService extends BaseService {
         }
     }
 
+    async transformBrandUpdateData(req, oldData) {
+        try {
+            const data = req.body;            
+            data.updatedBy = req.loggedInUser._id; // user id from auth middleware
+
+             // upload to cloudinary 
+            if (req.file) {
+                data.logo = await cloudinarySvc.fileUpload(req.file.path, '/brand/')
+            } else {
+                data.logo = oldData.logo; // keep the old logo if not updated
+            }
+
+            return data;
+
+        } catch (exception) {
+            throw exception
+        }
+    }
+
     publicBrandData = (row) => {
                 return {
                     _id: row._id,
                     name: row.name,
-                    slug: row.status,
+                    status: row.status,
+                    slug: row.slug,
                     logo: row.logo.optimizedUrl,
                     createdBy: {
                         _id: row.createdBy._id,
@@ -80,9 +98,15 @@ class BrandService extends BaseService {
         }
     }
 
-    update() {}
-    view() {}
-    delete() {}
+    async deleteSingleRowByFilter(filter) {
+        try {
+            const deletedData = await this.model.findOneAndDelete(filter);
+            return deletedData;
+        } catch (exception) {
+            throw exception;
+            
+        }
+    }
 }
 
 const brandSvc = new BrandService(BrandModel)

@@ -8,7 +8,7 @@ const jwt = require("jsonwebtoken");
 const userSvc = require("../modules/user/user.service");
 const { USER_ROLES } = require("../config/constant");
 
-const auth = (role = null) => {
+const auth = (role = null) => {    
     return async (req, res, next) => {
         try {
             let token = req.headers["authorization"];
@@ -69,7 +69,7 @@ const auth = (role = null) => {
             
             if (userDetail.role === USER_ROLES.ADMIN || role === null || (Array.isArray(role) && role.includes(userDetail.role))) {
                 req.loggedInUser = userDetail; 
-                console.log("req.loggedInUser middleware: ", req.loggedInUser);
+                // console.log("req.loggedInUser middleware: ", req.loggedInUser);
                 next();
             } else {
                 throw {
@@ -80,7 +80,7 @@ const auth = (role = null) => {
             }
 
         } catch (exception) {
-            console.error("Auth Middleware Error:", exception);
+            // console.error("Auth Middleware Error:", exception);
             // next(exception);
             if (exception.hasOwnProperty("name") && exception.name === "TokenExpiredError") {
                 next({code: 401, message: exception.message, status: "TOKEN_EXPIRED"});
