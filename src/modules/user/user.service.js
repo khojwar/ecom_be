@@ -1,5 +1,4 @@
-const UserModel = require("./user.model");
-const { create } = require("./user.model");
+const UserModel = require("./user.model.js");
 
 class UserService {
     getUserPublicProfile(user) {
@@ -18,6 +17,7 @@ class UserService {
             updatedBy: user.updatedBy,
             createdAt: user.createdAt,
             updatedAt: user.updatedAt,
+            deletedAt: user.deletedAt,
         }
     }
 
@@ -43,7 +43,7 @@ class UserService {
         }
     }
 
-    async updateSingleUserByFilter (filter, data) {
+    async updateSingleUserByFilter(filter, data) {
         try {
             const userData = await UserModel.findOneAndUpdate(filter, {$set: data}, {new: true});
             return userData;
@@ -88,6 +88,45 @@ class UserService {
         } catch (exception) {
             console.log("Error in getAllUsersByFilter", exception);
             throw exception;   
+        }
+    }
+
+    // Soft delete (move to trash)
+    async softDeleteUserById(userId, updatedBy) {
+        try { 
+            return await UserModel.findByIdAndUpdate(
+                userId,
+                { 
+                    deletedAt: new Date(), 
+                    updatedBy 
+                },
+                { new: true }
+            );
+        } catch (exception) {
+            throw exception;
+        }
+    }
+
+    // Restore from trash
+    async restoreUserById(userId, updatedBy) {
+        try {
+            return await UserModel.findByIdAndUpdate(
+                userId,
+                { deletedAt: null, updatedBy },
+                { new: true }
+            );
+            
+        } catch (exception) {
+            throw exception; 
+        }
+    }
+
+    // Permanently delete
+    async hardDeleteUserById(userId) {
+        try {
+            return await UserModel.findByIdAndDelete(userId);
+        } catch (exception) {
+            throw exception;
         }
     }
 

@@ -59,6 +59,10 @@ const UserSchema = new mongoose.Schema({
         ref: "User",
         default: null,
     },
+    deletedAt: {
+        type: Date,
+        default: null,
+    },
 }, {
     autoCreate: true, // automatically create the collection if it doesn't exist
     autoIndex: true, // automatically create indexes
