@@ -1,13 +1,13 @@
 const userRouter = require('express').Router();
-const UserController = require('./user.controller.js');
+const { USER_ROLES } = require('../../config/constant.js');
+const auth = require('../../middlewares/auth.middleware.js');
+const userCtr = require('./user.controller.js');
 
-const userCtr = new UserController();
+// User routes (we don't need to write all the routes here)
+userRouter.route('/').get(auth(USER_ROLES.ADMIN), userCtr.listAllUsers);
+userRouter.get("/:userId", userCtr.getUserById);
+    
 
-userRouter.post("/create", userCtr.createUser); 
-userRouter.put("/update/:id", userCtr.updateUser);
-userRouter.get("/list", userCtr.listAllUsers);
-userRouter.get("/view/:id", userCtr.viewUserDetails);
-userRouter.delete("/delete/:id", userCtr.deleteUser);
 
 
 module.exports = userRouter;

@@ -53,6 +53,44 @@ class UserService {
         }
     }
 
+// --------------------------------------
+    async getAllUsersByFilter(query, filter = {}) {
+        try {
+            const page = +query.page || 1;
+            const limit = +query.limit || 10;
+            const skip = (page - 1) * limit;
+
+            const data = await UserModel.find(filter)
+                .sort({name: "desc"})
+                .skip(skip)
+                .limit(limit);
+
+            const count = await UserModel.countDocuments(filter);
+
+            return {
+                data: data.map(userDetail => this.getUserPublicProfile(userDetail)),
+                pagination: {
+                    current: page,
+                    limit: limit,
+                    total: count,
+                    totalPages: Math.ceil(count / limit),
+                }
+            }
+
+            return {
+                data,
+                pagination: {
+                    total,
+                    page,
+                    limit
+                }
+            };
+        } catch (exception) {
+            console.log("Error in getAllUsersByFilter", exception);
+            throw exception;   
+        }
+    }
+
 
 
 }
