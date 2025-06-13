@@ -3,7 +3,7 @@ const authRouter = require("../modules/auth/auth.router.js"); // import auth rou
 const userRouter = require("../modules/user/user.router.js"); // import user router
 const brandRouter = require("../modules/brand/brand.router.js"); // import brand router
 const productRouter = require("../modules/product/product.router.js"); // import product router
-const categoryRouter = require("../modules/category/category.router.js"); // import category router
+const categoryRouter = require("../modules/categories/category.router.js"); // import category router
 
 
 router.get("/", (req, res) => {
