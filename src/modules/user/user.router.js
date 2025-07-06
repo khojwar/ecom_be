@@ -11,19 +11,16 @@ userRouter.route('/').get(auth(USER_ROLES.ADMIN), userCtr.listAllUsers);
 userRouter.get("/:userId", userCtr.getUserById);
 
 
-// TODO: 
-// update, delete (soft delete)
-// create trash user route 
-// delete user from trash
+/* ASSIGNMENT done: 
+* update, delete (soft delete)
+* create trash user route 
+* delete user from trash
+*/
 
-// update 
 userRouter.put('/:userId', auth(USER_ROLES.ADMIN), uploader().single('image'), bodyValidator(userUpdateDTO), userCtr.updateUserById);
 userRouter.delete("/:userId", auth(USER_ROLES.ADMIN), userCtr.softDeleteUserById);
 userRouter.patch("/:userId/restore", auth(USER_ROLES.ADMIN), userCtr.restoreUser);
 userRouter.delete("/:userId/permanent", auth(USER_ROLES.ADMIN), userCtr.hardDeleteUser);
-
-
-    
 
 
 

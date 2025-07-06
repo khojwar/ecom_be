@@ -1,14 +1,22 @@
-const ProductRouter = require('express').Router();
-const ProductController = require('./product.controller.js');
+const productRouter = require("express").Router();
+const { USER_ROLES } = require("../../config/constant.js");
+const auth = require("../../middlewares/auth.middleware.js");
+const bodyValidator = require("../../middlewares/request-validate.middleware.js");
+const uploader = require("../../middlewares/uploader.middleware.js");
+const { ProductCreateDTO, ProductUpdateDTO } = require("./product.validator.js");
+const productCtr = require("./product.controller.js");
 
 
-const productCtr = new ProductController();
+productRouter.get("/by-slug/:slug", productCtr.getProductDetailWithProducts);
 
-ProductRouter.post("/create", productCtr.createProduct);
-ProductRouter.get('/list', productCtr.listAllProduct);
-ProductRouter.get('/view/:id', productCtr.viewProductDetails);
-ProductRouter.put('/update/:id', productCtr.updateProduct);
-ProductRouter.delete('/delete/:id', productCtr.deleteProduct);
-ProductRouter.get("/read/:slug", productCtr.readByUrl)
+productRouter.route("/")
+    .post(auth([USER_ROLES.ADMIN, USER_ROLES.SELLER]), uploader().array('images'), bodyValidator(ProductCreateDTO), productCtr.createProduct)
+    .get(auth([USER_ROLES.ADMIN, USER_ROLES.SELLER]), productCtr.listAllProducts)
 
-module.exports = ProductRouter;
+productRouter.route("/:productId")
+    .get(productCtr.getProductDetailsById)
+    .put(auth([USER_ROLES.ADMIN, USER_ROLES.SELLER]), uploader().array('images'), bodyValidator(ProductUpdateDTO), productCtr.updateProductById)
+    .delete(auth([USER_ROLES.ADMIN, USER_ROLES.SELLER]), productCtr.deleteProductById)
+
+
+module.exports = productRouter;

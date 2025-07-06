@@ -65,7 +65,7 @@ class CategoryController {
             res.json({
                 data: data,
                 message: "All category data",
-                status: "BRAND_LIST_SUCCESS",
+                status: "CATEGORY_LIST_SUCCESS",
                 options: {pagination}
             })
         } catch (exception) {
@@ -84,7 +84,7 @@ class CategoryController {
                 throw {
                     code: 422,
                     message: "Category does not exist",
-                    status: "BRAND_NOT_FOUND"
+                    status: "CATEGORY_NOT_FOUND"
                 }
             }
 
@@ -93,7 +93,7 @@ class CategoryController {
             res.json({
                 data: categoryDetail,
                 message: "Category details",
-                status: "BRAND_DETAILS_FETCHED",
+                status: "CATEGORY_DETAILS_FETCHED",
                 options: null
             })
             
@@ -112,7 +112,7 @@ class CategoryController {
                 throw {
                     code: 422,
                     message: "Category does not exist",
-                    status: "BRAND_NOT_FOUND"
+                    status: "CATEGORY_NOT_FOUND"
                 }
             }
 
@@ -124,7 +124,7 @@ class CategoryController {
             res.json({
                 data: update,
                 message: "Category updated successfully",
-                status: "BRAND_UPDATED",
+                status: "CATEGORY_UPDATED",
                 options: null
             })
             
@@ -143,7 +143,7 @@ class CategoryController {
                 throw {
                     code: 422,
                     message: "Category does not exist",
-                    status: "BRAND_NOT_FOUND"
+                    status: "CATEGORY_NOT_FOUND"
                 }
             }
 
@@ -154,7 +154,7 @@ class CategoryController {
             res.json({
                 data: deletedRow,
                 message: "Category deleted successfully",
-                status: "BRAND_DELETED",
+                status: "CATEGORY_DELETED",
                 options: null
             })
             
@@ -172,7 +172,7 @@ class CategoryController {
                 throw {
                     code: 422,
                     message: "Category does not exist",
-                    status: "BRAND_NOT_FOUND"
+                    status: "CATEGORY_NOT_FOUND"
                 }
             }
 
@@ -184,7 +184,7 @@ class CategoryController {
                     products: null,
                 },
                 message: "Category details with products",
-                status: "BRAND_DETAILS_FETCHED",
+                status: "CATEGORY_DETAILS_FETCHED",
                 options: null
             })
             
