@@ -24,6 +24,9 @@ class ProductController {
             let filter = {};
             let loggedInUser = req.loggedInUser;
 
+            console.log(loggedInUser);
+            
+
             if (loggedInUser.role === "SELLER") {
                 filter = {
                     ...filter,
@@ -69,6 +72,7 @@ class ProductController {
                 options: {pagination}
             })
         } catch (exception) {
+            console.log(exception);
             throw exception;
         }
     }

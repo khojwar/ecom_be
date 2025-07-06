@@ -57,12 +57,12 @@ class BrandService extends BaseService {
                     slug: row.slug,
                     logo: row.logo.optimizedUrl,
                     createdBy: {
-                        _id: row.createdBy._id,
-                        name: row.createdBy.name,
-                        email: row.createdBy.email,
-                        role: row.createdBy.role,
-                        status: row.createdBy.status,
-                        image: row.createdBy.image.optimizedUrl
+                        _id: row?.createdBy?._id,
+                        name: row?.createdBy?.name,
+                        email: row?.createdBy?.email,
+                        role: row?.createdBy?.role,
+                        status: row?.createdBy?.status,
+                        image: row?.createdBy?.image?.optimizedUrl
                     },
                 }
             }

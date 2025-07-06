@@ -170,11 +170,11 @@ class ProductService extends BaseService {
                     status: row.status,
                     seller: userSvr.getUserPublicProfile(row.seller),
                     category: row.category.map(cat => (categorySvr.publicCategoryData(cat))),
-                    brand: brandSvc.publicProductData(row.brand),
+                    brand: row.brand && brandSvc.publicBrandData(row.brand),
                     images: row.images.map(image => image?.optimizedUrl),
                     createdBy: userSvr.getUserPublicProfile(row.createdBy),
-                    updatedBy: userSvr.getUserPublicProfile(row.updatedBy),
-                    
+                    updatedBy: row?.updatedBy ? userSvr.getUserPublicProfile(row.updatedBy) : null
+
                     // seller: {
                     //     _id: row.seller._id,
                     //     name: row.seller.name,
@@ -226,7 +226,7 @@ class ProductService extends BaseService {
             const skip = (page - 1) * limit;
 
             const data = await this.model.find(filter)
-                .populate('brands', ['_id', 'name', 'slug', 'logo', 'status'])
+                .populate('brand', ['_id', 'name', 'slug', 'logo', 'status'])
                 .populate('category', ['_id', 'name', 'slug', 'icon', 'status'])
                 .populate('seller', ['_id', 'name', 'email', 'image', 'role', 'status'])
                 .populate('createdBy', ['_id', 'name', 'email', 'image', 'role', 'status'])

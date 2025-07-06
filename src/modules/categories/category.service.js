@@ -81,14 +81,14 @@ class CategoryService extends BaseService {
                         logo: brand?.logo?.optimizedUrl,
                         status: brand.status
                     })),
-                    icon: row.icon.optimizedUrl,
+                    icon: row?.icon?.optimizedUrl,
                     createdBy: {
-                        _id: row.createdBy._id,
-                        name: row.createdBy.name,
-                        email: row.createdBy.email,
-                        role: row.createdBy.role,
-                        status: row.createdBy.status,
-                        image: row.createdBy.image.optimizedUrl
+                        _id: row?.createdBy?._id,
+                        name: row?.createdBy?.name,
+                        email: row?.createdBy?.email,
+                        role: row?.createdBy?.role,
+                        status: row?.createdBy?.status,
+                        image: row?.createdBy?.image?.optimizedUrl
                     },
                 }
             }
