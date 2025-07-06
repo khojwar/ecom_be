@@ -72,7 +72,7 @@ class ProductController {
                 options: {pagination}
             })
         } catch (exception) {
-            console.log(exception);
+            // console.log(exception);
             throw exception;
         }
     }
@@ -131,7 +131,7 @@ class ProductController {
             })
             
         } catch (exception) {
-            // console.log("updateProductById exception: ", exception);
+            console.log("updateProductById exception: ", exception);
             next(exception);  
         }
     }

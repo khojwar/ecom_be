@@ -16,7 +16,7 @@ class ProductService extends BaseService {
 
             // there can be same product's name, so we need to create a unique slug
             // slugify the name and append a random string to it
-            data.slug = slugify(data.name.replace("'","").replace('"','')+"-"+randomStringGenerator(7), {
+            data.slug = slugify(data.name.replace("+","-").replace("'","").replace('"','')+"-"+randomStringGenerator(7), {
                 lower: true,
             })
 
@@ -80,8 +80,8 @@ class ProductService extends BaseService {
             } 
 
             // for foreign key brands, if brands is empty or null, set it to null
-            if (data.brands === "" || data.brands === null) {
-                data.brands = null;
+            if (data.brand === "" || data.brand === null) {
+                data.brand = null;
             }
 
             // upload to cloudinary
@@ -168,12 +168,12 @@ class ProductService extends BaseService {
                     sku: row.sku,
                     homeFeature: row.homeFeature,
                     status: row.status,
-                    seller: userSvr.getUserPublicProfile(row.seller),
-                    category: row.category.map(cat => (categorySvr.publicCategoryData(cat))),
+                    seller: row?.seller && userSvr.getUserPublicProfile(row.seller),
+                    category: row.category && row.category.map(cat => (categorySvr.publicCategoryData(cat))),
                     brand: row.brand && brandSvc.publicBrandData(row.brand),
                     images: row.images.map(image => image?.optimizedUrl),
-                    createdBy: userSvr.getUserPublicProfile(row.createdBy),
-                    updatedBy: row?.updatedBy ? userSvr.getUserPublicProfile(row.updatedBy) : null
+                    createdBy: row?.createdBy && userSvr.getUserPublicProfile(row.createdBy),
+                    updatedBy: row?.updatedBy && userSvr.getUserPublicProfile(row.updatedBy)
 
                     // seller: {
                     //     _id: row.seller._id,
