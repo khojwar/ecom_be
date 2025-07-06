@@ -53,7 +53,7 @@ class ProductService extends BaseService {
                 const uploadedStatus = await Promise.allSettled(images);    // allSettled will return an array of objects with status and value
                 uploadedStatus.map((cloudinaryUploadSuccess) => {
                     if (cloudinaryUploadSuccess.status === 'fulfilled') { 
-                        data.images.push(cloudinaryUploadSuccess);
+                        data.images.push(cloudinaryUploadSuccess.value); // push the value of the fulfilled promise
                     } 
                 })
             }
