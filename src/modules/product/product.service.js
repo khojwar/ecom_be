@@ -5,7 +5,7 @@ const ProductModel = require("./product.model");
 const { randomStringGenerator } = require("../../utilities/helper");
 const userSvr = require("../user/user.service")
 const categorySvr = require("../categories/category.service")
-const brandSvc = require("../brands/brand.service");
+const brandSvc = require("../brand/brand.service");
 
 class ProductService extends BaseService {
     async transformProductCreateData(req) {
@@ -30,9 +30,9 @@ class ProductService extends BaseService {
                 data.category = null; 
             } 
 
-            // for foreign key brands, if brands is empty or null, set it to null
-            if (data.brands === "" || data.brands === null) {
-                data.brands = null;
+            // for foreign key brand, if brands is empty or null, set it to null
+            if (data.brand === "" || data.brand === null) {
+                data.brand = null;
             }
 
             // upload to cloudinary
@@ -264,5 +264,5 @@ class ProductService extends BaseService {
     }
 }
 
-const brandSvc = new ProductService(ProductModel)
-module.exports = brandSvc;
+const productSvc = new ProductService(ProductModel)
+module.exports = productSvc;
