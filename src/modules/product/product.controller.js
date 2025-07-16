@@ -134,7 +134,7 @@ class ProductController {
             console.log("updateProductById exception: ", exception);
             next(exception);  
         }
-    }
+    }                                                               
 
     async deleteProductById (req, res, next) {
         try {
@@ -179,6 +179,7 @@ class ProductController {
             }
 
             // TODO: Product
+            
 
             res.json({
                 data: {
@@ -195,6 +196,8 @@ class ProductController {
             
         }
     }
+
+    
 
 }
 
