@@ -1,6 +1,7 @@
 const { options } = require("joi");
 const productSvc = require("./product.service");
 const { message } = require("laravel-mix/src/Log");
+const { Status } = require("../../config/constant");
 
 class ProductController {
     createProduct = async (req, res, next) => {
@@ -50,6 +51,49 @@ class ProductController {
                     status: req.query.status
                 }
             }
+
+            if (+req.query.homeFeature === 1) {           // + converts string to number
+                filter = {
+                    ...filter,
+                    homeFeature: true
+                }
+            } else if (+req.query.homeFeature === 0) {
+                filter = {
+                    ...filter,
+                    homeFeature: false
+                }
+            }
+
+            const {data, pagination} = await productSvc.listAllRowsByFilter(req.query, filter);
+            
+            res.json({
+                data: data,
+                message: "All product data",
+                status: "PRODUCT_LIST_SUCCESS",
+                options: {pagination}
+            })
+        } catch (exception) {
+            // console.log(exception);
+            throw exception;
+        }
+    }
+
+    async listAllProductsForPublic (req, res, next) {
+        try {
+            let filter = {
+                status: Status.ACTIVE
+            };
+
+            if (req.query.search) {
+                filter = {
+                    ...filter,
+                    $or: [
+                        {name: new RegExp(req.query.search, 'i')} ,
+                        {description: new RegExp(req.query.search, 'i')},
+                    ]
+                }
+            }
+
 
             if (+req.query.homeFeature === 1) {           // + converts string to number
                 filter = {

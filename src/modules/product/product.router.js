@@ -8,6 +8,7 @@ const productCtr = require("./product.controller.js");
 
 
 productRouter.get("/by-slug/:slug", productCtr.getProductDetailWithProducts);
+productRouter.get("/list-all-products", productCtr.listAllProductsForPublic);
 
 productRouter.route("/")
     .post(auth([USER_ROLES.ADMIN, USER_ROLES.SELLER]), uploader().array('images'), bodyValidator(ProductCreateDTO), productCtr.createProduct)

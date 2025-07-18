@@ -3,6 +3,14 @@ const Status = {
     INACTIVE: "inactive",
 }
 
+const ORDER_STATUS = {
+    PENDING: 'pending',
+    CONFIRMED: 'confirmed',
+    SHIPPED: 'shipped',
+    DELIVERED: 'delivered',
+    CANCELLED: 'cancelled'
+}
+
 const USER_ROLES = {
     ADMIN: "admin",
     CUSTOMER: "customer",
@@ -18,5 +26,6 @@ const GENDER = {
 module.exports = {
     Status,
     USER_ROLES,
-    GENDER
+    GENDER,
+    ORDER_STATUS
 }

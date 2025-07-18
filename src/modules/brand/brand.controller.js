@@ -1,6 +1,8 @@
 const { options } = require("joi");
 const brandSvc = require("./brand.service");
 const { message } = require("laravel-mix/src/Log");
+const productSvc = require("../product/product.service");
+const { Status } = require("../../config/constant");
 
 class BrandController {
 
@@ -170,15 +172,21 @@ class BrandController {
             }
 
             // TODO: Product
+            const filter = {
+                brand: {$in: [brandDetail._id]},          // $in – Matches any of the values in an array
+                status: Status.ACTIVE
+            }
+
+            const {data: products, pagination} = await productSvc.listAllRowsByFilter(req.query, filter);
 
             res.json({
                 data: {
                     brandDetail: brandDetail,
-                    products: null,
+                    products: products,
                 },
                 message: "Brand details with products",
                 status: "BRAND_DETAILS_FETCHED",
-                options: null
+                options: {pagination}
             })
             
         } catch (exception) {

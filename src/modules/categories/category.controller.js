@@ -2,6 +2,7 @@ const { options } = require("joi");
 const categorySvc = require("./category.service");
 const { message } = require("laravel-mix/src/Log");
 const productSvc = require("../product/product.service");
+const { Status } = require("../../config/constant");
 
 class CategoryController {
     createCategory = async (req, res, next) => {
@@ -180,6 +181,7 @@ class CategoryController {
             // TODO: Product
             const filter = {
                 category: {$in: [categoryDetail._id]},          // $in – Matches any of the values in an array
+                status: Status.ACTIVE
             }
 
             const {data: products, pagination} = await productSvc.listAllRowsByFilter(req.query, filter);

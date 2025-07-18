@@ -4,6 +4,7 @@ const userRouter = require("../modules/user/user.router.js"); // import user rou
 const brandRouter = require("../modules/brand/brand.router.js"); // import brand router
 const productRouter = require("../modules/product/product.router.js"); // import product router
 const categoryRouter = require("../modules/categories/category.router.js"); // import category router
+const orderRouter = require("../modules/order/order.router.js");
 
 
 router.get("/", (req, res) => {
@@ -21,6 +22,7 @@ router.use("/brand", brandRouter)
 
 router.use("/product", productRouter);
 router.use("/category", categoryRouter);
+router.use("/order", orderRouter);
 
 
 // router.use("/order", orderRouter);
