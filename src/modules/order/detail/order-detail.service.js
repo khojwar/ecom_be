@@ -78,6 +78,14 @@ class OrderDetailService {
             throw exception;
         }
     }
+
+    removeFromCartByFilter = async (filter) => {
+        try {
+            return await OrderDetailModel.deleteMany(filter);
+        } catch (exception) {
+            throw exception;
+        }
+    }
 }
 
 module.exports = new OrderDetailService();
