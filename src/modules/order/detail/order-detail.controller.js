@@ -111,7 +111,9 @@ class OrderDetailController {
     deleteFromCart = async (req, res, next) => {
         try {
             const loggedInUser = req.loggedInUser;
-            const {productId, quantity} = req.body;            
+            const {productId, quantity} = req.body;  
+            
+            // console.log("Product ID: ", productId, " Quantity: ", quantity);
 
             const productDetail = await productSvc.getSingleRowByFilter({ _id: productId});
 
@@ -172,7 +174,7 @@ class OrderDetailController {
 
 
         } catch (exception) {
-            console.log("Error in addToCart: ", exception);
+            // console.log("Error in addToCart: ", exception);
             next(exception); 
         }
     }

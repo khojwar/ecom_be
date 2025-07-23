@@ -86,6 +86,65 @@ class OrderDetailService {
             throw exception;
         }
     }
+
+    convertToOrder = async (order, cartInfo) => {
+        try {
+            const updateInfo = [];
+
+            cartInfo.map((cartItem) => {
+                cartItem.order = order._id;
+                cartItem.price = cartItem.product.afterDiscount;
+                cartItem.subTotal = cartItem.product.afterDiscount * cartItem.quantity;
+                cartItem.total = cartItem.subTotal + cartItem.deliveryCharge;
+                cartItem.status = ORDER_STATUS.CONFIRMED;
+
+                updateInfo.push(cartItem.save());
+            })
+
+            const statusUpdate = await Promise.allSettled(updateInfo);
+
+            let returnOrderDetail = [];
+            statusUpdate.forEach((cartItem) => {
+                if (cartItem.status === 'fulfilled') {
+                    returnOrderDetail.push(cartItem.value);
+                }
+            })
+
+            return returnOrderDetail;
+
+        } catch (exception) {
+            throw exception;
+            
+        }
+    }
+
+
+    reduceStock = async (orderDetail) => {
+        try {
+            let products = [];
+
+            orderDetail.forEach((detail) => {
+                detail.product.stock -= detail.quantity;
+                products.push(detail.product.save());
+            })
+
+            const response = await Promise.allSettled(products);
+            const data = [];
+            response.forEach((productRes) => {
+                if (productRes.status === 'fulfilled') {
+                    data.push(productRes.value);
+                }
+            });
+
+            return data;
+            
+        } catch (exception) {
+            throw exception;
+            
+        }
+    }
 }
+
+
 
 module.exports = new OrderDetailService();

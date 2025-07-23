@@ -7,6 +7,6 @@ const { AddToCartDTO, DeleteFromCartDTO } = require('./order-detail.validator');
 
 orderDetailRouter.post('/add', auth([USER_ROLES.ADMIN, USER_ROLES.SELLER, USER_ROLES.CUSTOMER]), authValidator(AddToCartDTO), orderDetailController.addToCart);
 orderDetailRouter.get('/view', auth([USER_ROLES.ADMIN, USER_ROLES.SELLER, USER_ROLES.CUSTOMER]), orderDetailController.viewMyCart);
-orderDetailRouter.delete('/remove', auth([USER_ROLES.ADMIN, USER_ROLES.SELLER, USER_ROLES.CUSTOMER]), authValidator(DeleteFromCartDTO), orderDetailController.deleteFromCart);
+orderDetailRouter.post('/remove', auth([USER_ROLES.ADMIN, USER_ROLES.SELLER, USER_ROLES.CUSTOMER]), authValidator(DeleteFromCartDTO), orderDetailController.deleteFromCart);
 
 module.exports = orderDetailRouter;

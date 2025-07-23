@@ -23,9 +23,26 @@ const GENDER = {
     OTHER: "other"
 }
 
+const PAYMENT_METHODS = {
+    COD: "cod",
+    ESEWA: "esewa",
+    KHALTI: "khalti",
+    BANK: "bank",
+    IPS: "ips",
+    PAYPAL: "paypal",
+}
+
+const PAYMENT_STATUS = {
+    PAID: "paid",
+    REFUND: "refund",
+    PENDING: "pending",
+}
+
 module.exports = {
     Status,
     USER_ROLES,
     GENDER,
-    ORDER_STATUS
+    ORDER_STATUS,
+    PAYMENT_METHODS,
+    PAYMENT_STATUS
 }
