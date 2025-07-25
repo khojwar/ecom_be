@@ -17,12 +17,12 @@ const bodyValidator = (schema) => {
             
             let response = await schema.validateAsync(data, {abortEarly: false});
 
-            console.log("Validation response: ", response);
+            // console.log("Validation response: ", response);
 
             next(); 
             
         } catch (exception) {
-            console.log(exception);
+            // console.log(exception);
 
             // 400 --> bad request      --> it is with messageBag
             // 422 --> unprocessable entity   --> it is not with messageBag

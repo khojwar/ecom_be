@@ -1,6 +1,6 @@
-const { response } = require("express");
-const { PAYMENT_METHODS } = require("../../../config/constant");
+const { PAYMENT_METHODS, PAYMENT_STATUS } = require("../../../config/constant");
 const { randomStringGenerator } = require("../../../utilities/helper");
+const TransactionModel = require("./transaction.model.js"); 
 
 class TransactionService {
     transformToTransactionObject = (order) => {

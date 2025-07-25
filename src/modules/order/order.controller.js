@@ -1,12 +1,10 @@
-const { options } = require("joi");
-const { message } = require("laravel-mix/src/Log");
-const { ORDER_STATUS } = require("../../config/constant");
-const orderDetailService = require("./detail/order-detail.service");
-const { randomStringGenerator } = require("../../../utilities/helper");
+const orderDetailSvc = require("./detail/order-detail.service");
 const OrderSvc = require("./order.service");
 const transactionSvc = require("./transaction/transaction.service");
 const orderNotificationSvc = require("./order.mail");
-const { data } = require("autoprefixer");
+const axios = require('axios');
+const { PaymentConfig, AppConfig } = require("../../config/config");
+
 
 class OrderController {
     checkout = async (req, res, next) => {
@@ -16,14 +14,15 @@ class OrderController {
             const loggedInUser = req.loggedInUser;
 
             let newCartId = [];
-            // Ensure cartId is an array
+
+            // remove duplicates from cartId
             (new Set(cartId)).forEach((val) => {
                 newCartId.push(val);
-            });
+            });            
 
 
             // Fetch cart items for the logged-in user
-            const {data: cartInfo} = await orderDetailService.getAllRowsByFilter({
+            const {data: cartInfo} = await orderDetailSvc.getAllRowsByFilter({
                 _id: { $in: cartId },
                 buyer: loggedInUser._id,
                 order: {$eq: null}
@@ -36,12 +35,15 @@ class OrderController {
                     message: "Cart not found."
                 }
             }
+            
+            // console.log("cartInfo", cartInfo);     // solved till now
+            
 
             // Check if the cart items are already in an order 
             let exists = [];
-            let stockCheck = {};
+            let stockCheck = {};   
 
-            cartInfo.forEach((cartItem, index) => {
+            cartInfo.forEach((cartItem) => {
                 if (newCartId.includes(cartItem._id.toString())) {
                     exists.push(cartItem);
                 }
@@ -78,16 +80,17 @@ class OrderController {
             const order = await OrderSvc.createOrder(orderDetail);
 
             // orderDetailUpdate
-            await orderDetailService.convertToOrder(order, cartInfo);
+            await orderDetailSvc.convertToOrder(order, cartInfo);
 
             // stock reduce
-            await orderDetailService.reduceStock(cartInfo);
+            await orderDetailSvc.reduceStock(cartInfo);
 
             // Create a transaction
             let transaction =  transactionSvc.transformToTransactionObject(order);
             await transactionSvc.createTransaction(transaction);
 
-            await orderNotificationSvc.sendOrderDetailNotification(order, orderDetail);
+            // Send notifications
+            await orderNotificationSvc.sendOrderDetailNotification(order, cartInfo);
 
             res.json({
                 data: order,
@@ -97,14 +100,75 @@ class OrderController {
             })
 
 
-
         } catch (exception) {
+            console.log("Error in checkout:", exception);
+            
             next(exception);  
         }
     }
 
     initiatePayment  = async (req, res, next) => {
         try {
+            const orderCode = req.params.orderCode;
+            const buyer = req.loggedInUser;
+
+            const orderDetail = await OrderSvc.getSingleRowByFilter({
+                code: orderCode,
+                buyer: buyer._id
+            })
+
+            if (!orderDetail) {
+                throw {
+                    code: 422,
+                    message: "Order not found.",
+                    status: "ORDER_NOT_FOUND_ERROR"
+                }
+            }
+
+            // paymentUrl
+
+            //----------- BY USING AXIOS TO CALL KHALTI API -------------
+            // const paymentResponse = await axios.post(PaymentConfig.khalti.url, 
+            //     JSON.stringify(                {
+            //         "return_url": AppConfig.frontendUrl + "/payment?success=true",
+            //         "website_url": AppConfig.frontendUrl,
+            //         "amount": orderDetail.total,
+            //         "purchase_order_id": orderDetail.code,
+            //         "purchase_order_name": "E-Payment Purchase",
+            //     }), {
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //             "Authorization": `Key ${PaymentConfig.khalti.secretKey}`
+            //         }
+            //     }
+
+            // );
+
+            // console.log("Payment Response: ", paymentResponse.data);
+
+            // ----------- BY USING fETCH TO CALL KHALTI API -------------
+            const paymentResponse = await fetch(PaymentConfig.khalti.url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Key ${PaymentConfig.khalti.secretKey}`
+                },
+                body: JSON.stringify({
+                    "return_url": AppConfig.frontendUrl + "/payment?success=true",
+                    "website_url": AppConfig.frontendUrl,
+                    "amount": orderDetail.total,
+                    "purchase_order_id": orderDetail.code,
+                    "purchase_order_name": "E-Payment Purchase",
+                })
+            });
+
+
+            res.json({
+                data: await paymentResponse.json(),
+                message: "Payment initiated successfully.",
+                status: "PAYMENT_INITIATED",
+                options: null
+            })
 
         } catch (exception) {
             next(exception);

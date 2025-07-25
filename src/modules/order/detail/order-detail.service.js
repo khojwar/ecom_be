@@ -1,5 +1,5 @@
 const { ORDER_STATUS } = require('../../../config/constant');
-const OrderDetailModel = require('./order-detail.model');
+const OrderDetailModel = require('./order-detail.model.js');
 
 
 class OrderDetailService {
@@ -21,8 +21,6 @@ class OrderDetailService {
             const page = parseInt(query.page) || 1;
             const limit = parseInt(query.limit) || 10;
             const skip = (page - 1) * limit;
-
-            // console.log("Filter in getAllRowsByFilter: ", filter);
             
             
             const data = await OrderDetailModel.find(filter)
@@ -36,6 +34,8 @@ class OrderDetailService {
                 .limit(limit)
                 .sort({ createdAt: -1 });       // Sort by createdAt in descending order
 
+            // Count total documents matching the filter
+            // This is used for pagination
             const count = await OrderDetailModel.countDocuments(filter);
 
             return {
@@ -147,4 +147,5 @@ class OrderDetailService {
 
 
 
-module.exports = new OrderDetailService();
+const orderDetailSvc = new OrderDetailService();
+module.exports = orderDetailSvc;

@@ -1,4 +1,3 @@
-const { promises } = require('nodemailer/lib/xoauth2');
 const { USER_ROLES, Status } = require('../../config/constant');
 const userSvc = require('../../modules/user/user.service');
 const emailSvc = require('../../services/email.service')

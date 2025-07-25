@@ -1,9 +1,7 @@
 
 const multer  = require('multer')
-const { path } = require('../config/express.config')
 const fs = require('fs')
 const {randomStringGenerator} = require('../utilities/helper')
-const e = require('express')
 
 const myStorage = multer.diskStorage({
     destination: function (req, file, cb) {

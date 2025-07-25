@@ -7,7 +7,8 @@ class OrderDetailController {
     addToCart = async (req, res, next) => {
         try {
             const loggedInUser = req.loggedInUser;
-            const {productId, quantity} = req.body;            
+            const {productId, quantity} = req.body;    
+                        
 
             const productDetail = await productSvc.getSingleRowByFilter({ _id: productId});
 
@@ -18,6 +19,7 @@ class OrderDetailController {
                     code: 422
                 }
             }
+            
 
             // Check if the product is already in the cart
             const cartFilter = {
@@ -28,11 +30,16 @@ class OrderDetailController {
             
             const existingCart = await orderDetailService.getSingleRowByFilter(cartFilter);
 
+            // console.log("Existing Cart: ", existingCart);
+            
+
             let currentCart = null;
 
-            existingCart.quantity = existingCart.quantity + quantity;
             if (existingCart) {
+
                 // If the product is already in the cart, update the quantity
+                existingCart.quantity = existingCart.quantity + quantity;
+
                 if (productDetail.stock < existingCart.quantity) {
                     throw {
                         message: "Insufficient stock",
@@ -64,7 +71,7 @@ class OrderDetailController {
                 });
 
                 // Create a new cart item
-                const currentCart = await orderDetailService.addToCart(cartItem);  
+                currentCart = await orderDetailService.addToCart(cartItem);  
             }
 
             res.json({
@@ -127,9 +134,9 @@ class OrderDetailController {
 
             // Check if the product is already in the cart
             const cartFilter = {
-                product: productDetail._id,
+                product: productId,
                 buyer: loggedInUser._id,
-                order: null     // Ensure it's a cart item (not part of an order)
+                order: {$eq: null}     // Ensure it's a cart item (not part of an order)
             }
             
             const existingCart = await orderDetailService.getSingleRowByFilter(cartFilter);

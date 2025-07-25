@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { PAYMENT_METHODS, PAYMENT_STATUS } = require("../../../config/constant");
-const { string } = require("joi");
 
 const transactionSchema = new mongoose.Schema({
     order: {

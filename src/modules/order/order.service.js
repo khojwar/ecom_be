@@ -1,5 +1,6 @@
 const OrderModel = require("./order.model");
-const {randomStringGenerator} = require('../../utilities/helper')
+const {randomStringGenerator} = require('../../utilities/helper');
+const { ORDER_STATUS } = require("../../config/constant");
 
 
 class OrderService {
@@ -47,6 +48,17 @@ class OrderService {
         } catch (exception) {
             throw exception;
             
+        }
+    }
+
+    getSingleRowByFilter = async (filter) => {
+        try {
+            const orderDetail = await OrderModel.findOne(filter)
+                .populate("buyer", ['_id', 'name', 'email', 'address', 'phone', 'image', 'role', 'status']);
+            return orderDetail;
+            
+        } catch (exception) {
+            throw exception;
         }
     }
 

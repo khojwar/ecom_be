@@ -1,6 +1,6 @@
 const { USER_ROLES } = require("../../config/constant");
 const auth = require("../../middlewares/auth.middleware");
-const bodyValidator = require("../../middlewares/request-validate.middleware");
+const bodyValidator = require("../../middlewares/request-validate.middleware.js")
 const orderDetailRouter = require("./detail/order-detail.router");
 const orderCtr = require("./order.controller");
 const { CheckoutDTO } = require("./order.validator");

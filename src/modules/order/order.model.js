@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const { Status, ORDER_STATUS } = require("../../config/constant");
-const { ref, required, boolean } = require("joi");
+const { ORDER_STATUS } = require("../../config/constant");
 
 // id, code, buyer, grossTotal, discount, deliveryCharge, serviceCharge, subTotal, tax, total, status, isPaid, createdBy, updatedBy, createdAt, updatedAt
 const orderSchema = new mongoose.Schema(

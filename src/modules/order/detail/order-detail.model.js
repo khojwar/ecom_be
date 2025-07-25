@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const order = require('../order.model');
 const { ORDER_STATUS } = require('../../../config/constant');
 
 
@@ -63,5 +62,5 @@ const orderDetailSchema = new mongoose.Schema({
     },
 });
 
-OrderDetailModel = mongoose.model('OrderDetail', orderDetailSchema);
+const OrderDetailModel = mongoose.model('OrderDetail', orderDetailSchema);
 module.exports = OrderDetailModel;
