@@ -101,7 +101,7 @@ class OrderController {
 
 
         } catch (exception) {
-            console.log("Error in checkout:", exception);
+            // console.log("Error in checkout:", exception);
             
             next(exception);  
         }

@@ -20,8 +20,12 @@ const deleteFile = (filePath) => {
     }
 }
 
+const showPrice = (num)=>{
+    return new Intl.NumberFormat('np', {style: "currency", currency: "npr", currencySign: "standard"}).format(+num)
+}
 
 module.exports = {
     randomStringGenerator,
-    deleteFile
+    deleteFile,
+    showPrice
 };

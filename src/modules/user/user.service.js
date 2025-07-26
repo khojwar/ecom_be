@@ -65,6 +65,9 @@ class UserService {
                 .skip(skip)
                 .limit(limit);
 
+                // console.log("data", data);
+                
+
             const count = await UserModel.countDocuments(filter);
 
             return {
@@ -77,14 +80,14 @@ class UserService {
                 }
             }
 
-            return {
-                data,
-                pagination: {
-                    total,
-                    page,
-                    limit
-                }
-            };
+            // return {
+            //     data,
+            //     pagination: {
+            //         total,
+            //         page,
+            //         limit
+            //     }
+            // };
         } catch (exception) {
             console.log("Error in getAllUsersByFilter", exception);
             throw exception;   
