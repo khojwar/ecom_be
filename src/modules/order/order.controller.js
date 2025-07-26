@@ -146,31 +146,64 @@ class OrderController {
 
             // console.log("Payment Response: ", paymentResponse.data);
 
+
             // ----------- BY USING fETCH TO CALL KHALTI API -------------
-            const paymentResponse = await fetch(PaymentConfig.khalti.url, {
+            const response = await fetch(
+                PaymentConfig.khalti.url + "epayment/initiate/",
+                {
                 method: "POST",
+                body: JSON.stringify({
+                    return_url: AppConfig.frontendUrl + "/payment?success=true",
+                    website_url: AppConfig.frontendUrl,
+                    amount: 1000, //in paisa, less than 2 lakh
+                    purchase_order_id: orderDetail.code,
+                    purchase_order_name: "E-payment purchase",
+                    /*  customer_info: {
+                    name: orderDetail.buyer?.name,
+                    email: orderDetail.buyer?.email,
+                    phone: String(orderDetail.buyer?.phone),
+                },
+                amount_breakdown: [
+                    {
+                    label: "Mark Price",
+                    amount: orderDetail.subTotal,
+                    },
+                    {
+                    label: "VAT",
+                    amount: orderDetail.tax,
+                    },
+                ], */
+                    /*  product_details: [
+                    {
+                    identity: "1234567890",
+                    name: "Khalti logo",
+                    total_price: 1300,
+                    quantity: 1,
+                    unit_price: 1300,
+                    },
+                ], */
+                    //   merchant_username: "merchant_name",
+                    //   merchant_extra: "merchant_extra",
+                }),
+
                 headers: {
                     "Content-Type": "application/json",
-                    "Authorization": `Key ${PaymentConfig.khalti.secretKey}`
+                    Authorization: "Key " + PaymentConfig.khalti.secretKey,
                 },
-                body: JSON.stringify({
-                    "return_url": AppConfig.frontendUrl + "/payment?success=true",
-                    "website_url": AppConfig.frontendUrl,
-                    "amount": orderDetail.total,
-                    "purchase_order_id": orderDetail.code,
-                    "purchase_order_name": "E-Payment Purchase",
-                })
+                }
+            );
+            const paymentResponse = await response.json();
+            
+            res.json({
+                data: paymentResponse,
+                message: "Payment Initiated",
+                status: "PAYMENT_INITIATED",
+                options: null,
             });
 
-
-            res.json({
-                data: await paymentResponse.json(),
-                message: "Payment initiated successfully.",
-                status: "PAYMENT_INITIATED",
-                options: null
-            })
-
         } catch (exception) {
+            console.log("Error in initiatePayment:", exception);
+            
             next(exception);
         }
     }
