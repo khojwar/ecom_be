@@ -4,7 +4,7 @@ const transactionSvc = require("./transaction/transaction.service");
 const orderNotificationSvc = require("./order.mail");
 const axios = require('axios');
 const { PaymentConfig, AppConfig } = require("../../config/config");
-const { PAYMENT_STATUS, PAYMENT_METHODS, USER_ROLES } = require("../../config/constant");
+const { PAYMENT_STATUS, PAYMENT_METHODS, USER_ROLES, ORDER_STATUS } = require("../../config/constant");
 const { data } = require("autoprefixer");
 const { message } = require("laravel-mix/src/Log");
 
@@ -308,6 +308,24 @@ class OrderController {
 
             } else {
                 // if seller, query orderDetail
+
+                const filter = {
+                    seller: loggedInUser._id,
+                    order: {$ne: null},
+                    status: {$ne: ORDER_STATUS.PENDING}
+                };
+
+                const {data, pagination} = await orderDetailSvc.getAllRowsByFilter(filter, req.query);
+
+                res.json({
+                    data,
+                    message: "Orders fetched successfully.",
+                    status: "ORDERS_FETCHED",
+                    options: {
+                        pagination
+                    }
+                });
+
             }
 
         } catch (exception) {
@@ -318,6 +336,42 @@ class OrderController {
     viewOrderDetails = async (req, res, next) => {
         try {
 
+            const { orderCode } = req.params;
+            const loggedInUser = req.loggedInUser;
+
+            const order = await OrderSvc.getSingleRowByFilter({ code: orderCode });
+
+            if (!order) {
+                throw {
+                    message: 'Order not found',
+                    status: 'ORDER_NOT_FOUND_ERR',
+                    code: 422
+                }
+            }
+
+            let filter = {
+                order: order._id,
+                // status: { $ne: ORDER_STATUS.PENDING },
+            }
+
+            if (loggedInUser.role === USER_ROLES.CUSTOMER) {
+                filter = {
+                    ...filter,
+                    buyer: loggedInUser._id,
+                }
+            }
+
+            const {data, pagination} = await orderDetailSvc.getAllRowsByFilter(filter, req.query);
+
+            res.json({
+                data,
+                message: "Orders Details fetched successfully.",
+                status: "YOUR_ORDER_DETAILS_FETCHED",
+                options: {
+                    pagination
+                }
+            });
+            
         } catch (exception) {
             next(exception);
         }
