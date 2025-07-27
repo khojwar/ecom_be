@@ -24,6 +24,15 @@ const DBConfig = {
   mongoDBName: process.env.MONGODB_NAME,
 }
 
+const sqlConfig = {
+  dialect: process.env.SQL_DIALECT,
+  host: process.env.SQL_HOST,
+  port: process.env.SQL_PORT,
+  user: process.env.SQL_USER,
+  password: process.env.SQL_PWD,
+  database: process.env.SQL_DB,
+}
+
 const PaymentConfig = {
   khalti: {
     url: process.env.KHALTI_PAYMENT_URL,
@@ -35,5 +44,6 @@ module.exports = {
   AppConfig,
   SMTPConfig,
   DBConfig,
-  PaymentConfig
+  PaymentConfig,
+  sqlConfig
 };
