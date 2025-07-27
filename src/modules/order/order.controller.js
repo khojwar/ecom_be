@@ -4,6 +4,8 @@ const transactionSvc = require("./transaction/transaction.service");
 const orderNotificationSvc = require("./order.mail");
 const axios = require('axios');
 const { PaymentConfig, AppConfig } = require("../../config/config");
+const { PAYMENT_STATUS, PAYMENT_METHODS } = require("../../config/constant");
+const { data } = require("autoprefixer");
 
 
 class OrderController {
@@ -193,7 +195,7 @@ class OrderController {
                 }
             );
             const paymentResponse = await response.json();
-            
+
             res.json({
                 data: paymentResponse,
                 message: "Payment Initiated",
@@ -210,6 +212,43 @@ class OrderController {
 
     updatePaymentDetails = async (req, res, next) => {
         try {
+
+            const paymentResponse = req.body;
+            const orderCode = req.params.orderCode;
+
+            const orderDetail = await OrderSvc.getSingleRowByFilter({
+                code: orderCode,
+            })
+
+            if (!orderDetail) {
+                throw {
+                    code: 422,      // 422 for Unprocessable Entity
+                    message: "Order not found.",
+                    status: "ORDER_NOT_FOUND_ERROR"
+                }
+            }
+
+            orderDetail.isPaid = true;
+            await orderDetail.save();
+
+            const transaction = await transactionSvc.getSingleRowByFilter({
+                order: orderDetail._id
+            })
+
+            transaction.amount = paymentResponse.total_amount;
+            transaction.transactionCode = paymentResponse.transaction_id;
+            transaction.paymentResponse = JSON.stringify(paymentResponse);
+            transaction.status = PAYMENT_STATUS.PAID;
+            transaction.paymentMethod = PAYMENT_METHODS.KHALTI;
+
+            await transaction.save();
+
+            res.json({
+                data: null,
+                message: "Payment has been updated successfully.",
+                status: "PAYMENT_DONE",
+                options: null
+            })
 
         } catch (exception) {
             next(exception);
