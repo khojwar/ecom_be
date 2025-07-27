@@ -62,8 +62,41 @@ class OrderService {
         }
     }
 
+    getAllRowsByFilter = async (filter, query={}) => {
+        try {
+
+            const page = query.page || 1;
+            const limit = query.limit || 20;
+            const skip = (page - 1) * limit;
+
+            const orders = await OrderModel.find(filter)
+                            .populate("buyer", ['_id', 'name', 'email', 'address', 'phone', 'image', 'role', 'status'])
+                            .sort({createdAt: -1})
+                            .skip(skip)
+                            .limit(limit);
+            
+            const totalCount = await OrderModel.countDocuments(filter);
+
+            return {
+                data: orders,
+                pagination: {
+                    currrentPage: parseInt(page),
+                    limit: parseInt(limit),
+                    total: totalCount,
+                    totalPages: Math.ceil(totalCount / limit)
+                }
+            };
+
+        } catch (exception) {
+            throw exception;
+            
+        }
+    }
+
 
 }
+
+
 
 const OrderSvc = new OrderService();
 

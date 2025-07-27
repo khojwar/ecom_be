@@ -4,8 +4,9 @@ const transactionSvc = require("./transaction/transaction.service");
 const orderNotificationSvc = require("./order.mail");
 const axios = require('axios');
 const { PaymentConfig, AppConfig } = require("../../config/config");
-const { PAYMENT_STATUS, PAYMENT_METHODS } = require("../../config/constant");
+const { PAYMENT_STATUS, PAYMENT_METHODS, USER_ROLES } = require("../../config/constant");
 const { data } = require("autoprefixer");
+const { message } = require("laravel-mix/src/Log");
 
 
 class OrderController {
@@ -257,7 +258,58 @@ class OrderController {
 
     listAllOrders = async (req, res, next) => {
         try {
-            
+            const loggedInUser = req.loggedInUser;
+
+            if (loggedInUser.role === USER_ROLES.CUSTOMER || loggedInUser.role === USER_ROLES.ADMIN) {
+                // if customer or admin, query order
+                let filter={}
+
+                if (loggedInUser.role === USER_ROLES.CUSTOMER) {
+                    filter = { buyer: loggedInUser._id };
+                }
+
+                // search
+                if (req.query.search) {
+                    filter = {
+                        ...filter,
+                        $or: [
+                            { code: new RegExp(req.query.search, 'i') },
+                        ]
+                    };
+                }
+
+                // status
+                if (req.query.status) {
+                    filter = {
+                        ...filter,
+                        Status: req.query.status
+                    };
+                }
+
+                // paid
+                if (req.query.paid) {
+                    filter = {
+                        ...filter,
+                        isPaid: isPaid === 'true' ? true : false
+                    };
+                }
+
+                // pagination
+                const {data, pagination} = await OrderSvc.getAllRowsByFilter(filter, req.query);
+
+                res.json({
+                    data,
+                    message: "Orders fetched successfully.",
+                    status: "ORDERS_FETCHED",
+                    options: {
+                        pagination
+                    }
+                });
+
+            } else {
+                // if seller, query orderDetail
+            }
+
         } catch (exception) {
             next(exception);
         }
