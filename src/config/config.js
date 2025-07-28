@@ -29,8 +29,8 @@ const sqlConfig = {
   host: process.env.SQL_HOST,
   port: process.env.SQL_PORT,
   user: process.env.SQL_USER,
-  password: process.env.SQL_PWD,
-  database: process.env.SQL_DB,
+  pwd: process.env.SQL_PWD,
+  db: process.env.SQL_DB,
 }
 
 const PaymentConfig = {

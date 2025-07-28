@@ -1,6 +1,17 @@
 
 const express = require('express');
 require('./mongodb.config.js')
+
+// -------------------------------------------
+// connect to SQL database
+const { authenticateSql } = require('./sql.config.js');
+authenticateSql()
+  .then(() => console.log("SQL Database connected successfully"))
+  .catch((error) => console.error("SQL Database connection failed:", error));
+
+  // -------------------------------------------
+
+
 const router = require("./router.config.js");
 const { deleteFile } = require('../utilities/helper.js');
 
