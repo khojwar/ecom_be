@@ -71,7 +71,7 @@ class CategoryController {
                 options: {pagination}
             })
         } catch (exception) {
-            throw exception;
+            next(exception);
         }
     }
 

@@ -53,7 +53,7 @@ class BrandController {
                 options: {pagination}
             })
         } catch (exception) {
-            throw exception;
+            next(exception);
         }
     }
 

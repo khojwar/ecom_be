@@ -52,7 +52,7 @@ class BannerController {
                 options: {pagination}
             })
         } catch (exception) {
-            throw exception;
+            next(exception);
         }
     }
 

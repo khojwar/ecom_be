@@ -341,7 +341,7 @@ class AuthController {
       
       
     } catch (exception) {
-      throw exception;
+      next(exception);
     }
   };
 

@@ -74,7 +74,7 @@ class ProductController {
             })
         } catch (exception) {
             // console.log(exception);
-            throw exception;
+            next(exception);
         }
     }
 
@@ -117,7 +117,7 @@ class ProductController {
             })
         } catch (exception) {
             // console.log(exception);
-            throw exception;
+            next(exception);
         }
     }
 
