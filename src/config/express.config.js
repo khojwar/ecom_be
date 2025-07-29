@@ -2,6 +2,8 @@
 const express = require('express');
 require('./mongodb.config.js')
 
+const authServ = require('../modules/auth/auth.service.js');
+
 // -------------------------------------------
 // connect to SQL database
 const { authenticateSql } = require('./sql.config.js');
@@ -15,8 +17,24 @@ authenticateSql()
 const router = require("./router.config.js");
 const { deleteFile } = require('../utilities/helper.js');
 
+const EventEmitter = require('events');
+
+const myEvent = new EventEmitter();
+// trigger
+// listen (consume)
+
 
 const app = express(); // create an express application 
+
+// event listen
+myEvent.on("sendWelcomeNotification", async (user) => {
+    await authServ.sendActivationNotification(user);
+});
+
+app.use((req, res, next) => {
+    req.myEvent = myEvent; // attach the event emitter to the request object
+    next(); // call the next middleware
+})
 
 // app.use((req, res, next) => {
 //     console.log("I am always executable");

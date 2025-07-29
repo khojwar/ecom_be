@@ -16,7 +16,12 @@ class AuthController {
       let user = await userSvc.createUser(data);
 
       // Email
-      await authServ.sendActivationNotification(user);
+      // Queue (bull or rabbitmq)
+      // bg process
+      // trigger
+      req.myEvent.emit("sendWelcomeNotification", user);
+
+      // await authServ.sendActivationNotification(user);
 
       res.status(200).json({
         data: userSvc.getUserPublicProfile(user),
