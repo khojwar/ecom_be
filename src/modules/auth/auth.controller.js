@@ -22,6 +22,7 @@ class AuthController {
       req.myEvent.emit("sendWelcomeNotification", user);
 
       // await authServ.sendActivationNotification(user);
+      
 
       res.status(200).json({
         data: userSvc.getUserPublicProfile(user),

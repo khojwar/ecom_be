@@ -31,8 +31,11 @@ class BannerController {
         try {
             let filter = {};
             if (req.query.search) {
-                filter.title = {
-                    [Op.iLike]: `%${req.query.search}%`
+                filter = {
+                    ...filter,
+                    title: {
+                        [Op.iLike]: `%${req.query.search}%`
+                    }
                 };
             }
 

@@ -41,6 +41,7 @@ class BannerService {
                 return {
                     _id: row._id,
                     title: row.title,
+                    url: row.link,
                     status: row.status,
                     image: row.image.optimizedUrl,
                 }

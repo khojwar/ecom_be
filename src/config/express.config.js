@@ -1,6 +1,9 @@
 
 const express = require('express');
 require('./mongodb.config.js')
+const cors = require('cors')
+const helmet = require('helmet');
+const limiter = require('express-rate-limit');
 
 const authServ = require('../modules/auth/auth.service.js');
 
@@ -30,6 +33,17 @@ const app = express(); // create an express application
 myEvent.on("sendWelcomeNotification", async (user) => {
     await authServ.sendActivationNotification(user);
 });
+
+app.use(cors({
+  origin: '*',
+}));
+
+app.use(helmet());
+
+app.use(limiter({
+    windowMs: 60 * 1000, // 1 minute
+    limit: 30, // limit each IP to 30 requests per windowMs
+}));
 
 app.use((req, res, next) => {
     req.myEvent = myEvent; // attach the event emitter to the request object
