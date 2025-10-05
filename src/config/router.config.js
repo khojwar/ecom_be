@@ -7,6 +7,7 @@ const categoryRouter = require("../modules/categories/category.router.js"); // i
 const orderRouter = require("../modules/order/order.router.js");
 const bannerRouter = require("../modules/banner/banner.router.js");
 const chatRouter = require("../modules/chat/chat.router.js");
+const transactionRouter = require("../modules/order/transaction/transaction.router.js");
 
 
 router.get("/", (req, res) => {
@@ -27,6 +28,8 @@ router.use("/category", categoryRouter);
 router.use("/order", orderRouter);
 router.use("/banner", bannerRouter);
 router.use("/chat", chatRouter); 
+router.use("/transaction", transactionRouter); 
+
 
 
 

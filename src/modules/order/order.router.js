@@ -6,7 +6,7 @@ const orderCtr = require("./order.controller");
 const { CheckoutDTO } = require("./order.validator");
 const orderRouter = require("express").Router();
 
-orderRouter.use('/detail', orderDetailRouter);  
+orderRouter.use('/detail', orderDetailRouter); 
 
 orderRouter.post('/checkout', auth([USER_ROLES.ADMIN, USER_ROLES.CUSTOMER]), bodyValidator(CheckoutDTO), orderCtr.checkout);
 orderRouter.get('/payment/:orderCode', auth([USER_ROLES.ADMIN, USER_ROLES.CUSTOMER]), orderCtr.initiatePayment);
