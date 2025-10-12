@@ -280,7 +280,7 @@ class OrderController {
                 if (req.query.status) {
                     filter = {
                         ...filter,
-                        Status: req.query.status
+                        status: req.query.status
                     };
                 }
 
@@ -288,7 +288,7 @@ class OrderController {
                 if (req.query.paid) {
                     filter = {
                         ...filter,
-                        isPaid: isPaid === 'true' ? true : false
+                        isPaid: req.query.paid === 'true' ? true : false
                     };
                 }
 

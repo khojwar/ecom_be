@@ -3,7 +3,7 @@ const chatSvc = require("./chat.service");
 
 class ChatController {
     async storeChat(req, res, next) {
-        try {
+        try {            
             const chatData = chatSvc.transformChatData(req);
 
             const chat = await chatSvc.create(chatData);
@@ -24,9 +24,11 @@ class ChatController {
     async getAllChats(req, res, next) {
         try {
 
+            // Find all chat messages where either I sent the message to them or they sent the message to me.
+            // $or = match if any of these conditions are true.
             let filter = { 
                 $or: [ { sender: req.loggedInUser._id, receiver: req.params.receiver },     // if sender is i am
-                        { receiver: req.params.receiver, sender: req.loggedInUser._id }     // if receiver is i am
+                        { sender: req.params.receiver, receiver: req.loggedInUser._id }     // if receiver is i am
                 ]   
             }
 
@@ -36,7 +38,7 @@ class ChatController {
             // 3. search can also be added here if needed
 
             const {data, pagination} = await chatSvc.getAllRowByFilter(filter, req.query);
-
+            
 
             res.json({
                 data: data,
